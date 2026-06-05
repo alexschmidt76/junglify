@@ -1,0 +1,30 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "rest api for junglify's database",
+  "homepage": "https://github.com/alexschmidt76/junglify#readme",
+  "bugs": {
+    "url": "https://github.com/alexschmidt76/junglify/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexschmidt76/junglify.git"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Alex Schmidt"
+  },
+  "type": "NodeNext",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "\"echo \\\"No tests yet\\\" && exit 0\"",
+    "build": "tsc",
+    "lint": "tslint -c tslint.json src/**/*.ts",
+    "prepublish": "npm run build"
+  },
+  "files": [
+    "./bin/*",
+    "./lib/*"
+  ],
+  "typings": "./lib/index.d.ts"
+}
