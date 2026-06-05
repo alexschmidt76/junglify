@@ -14,9 +14,10 @@
   "author": {
     "name": "Alex Schmidt"
   },
-  "type": "NodeNext",
-  "main": "./lib/index.js",
+  "type": "module",
+  "main": "./dist/server.js",
   "scripts": {
+    "dev": "tsc && node ./dist/server.js",
     "test": "\"echo \\\"No tests yet\\\" && exit 0\"",
     "build": "tsc",
     "lint": "tslint -c tslint.json src/**/*.ts",
@@ -24,7 +25,15 @@
   },
   "files": [
     "./bin/*",
-    "./lib/*"
+    "./dist/*"
   ],
-  "typings": "./lib/index.d.ts"
+  "typings": "./dist/server.d.ts",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "cors": "^2.8.6"
+  }
 }
