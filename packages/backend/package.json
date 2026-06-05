@@ -29,7 +29,11 @@
   ],
   "typings": "./dist/server.d.ts",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "postgres": "^3.4.9",
+    "url": "^0.11.4"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
