@@ -4,11 +4,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const db = postgres(process.env.DB_URL);
+const sql = postgres(process.env.DB_PUBLIC_URL);
 
 async function migrate() {
     // create migrations table if one doesn't exist
-    await db`
+    await sql`
         CREATE TABLE IF NOT EXISTS _migrations (
             id       SERIAL PRIMARY KEY,
             filename TEXT NOT NULL UNIQUE,
@@ -17,7 +17,7 @@ async function migrate() {
     `;
 
     // get migrations that have already ran
-    const ran = await db`SELECT filename FROM _migrations`;
+    const ran = await sql`SELECT filename FROM _migrations`;
     const ranSet = new Set(ran.map(r => r.filename));
 
     // get all migration files in order of number
@@ -40,16 +40,16 @@ async function migrate() {
         const fileContents = fs.readFileSync(filepath, 'utf8');
 
         // attempt the migration and log it if it's successful
-        await db.begin(async db => {
-            await db.unsafe(fileContents);
-            await db`INSERT INTO _migrations (filename) VALUES (${file})`
+        await sql.begin(async sql => {
+            await sql.unsafe(fileContents);
+            await sql`INSERT INTO _migrations (filename) VALUES (${file})`
         });
 
         console.log(`${file} complete`);
     };
 
     console.log('migrations complete');
-    await db.end();
+    await sql.end();
 };
 
 migrate().catch(err => {

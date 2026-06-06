@@ -1,6 +1,6 @@
-CREATE TABLE jungle (
+CREATE TABLE jungles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    planted_by_user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+    planted_by_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
     url TEXT NOT NULL,
     connected_jungle_urls TEXT[] NOT NULL,
     jungle_type TEXT NOT NULL,
