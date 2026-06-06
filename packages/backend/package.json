@@ -29,15 +29,19 @@
   ],
   "typings": "./dist/server.d.ts",
   "dependencies": {
+    "@auth/express": "^0.12.2",
+    "@auth/pg-adapter": "^1.11.2",
     "express": "^5.2.1",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
+    "pg": "^8.21.0",
     "postgres": "^3.4.9",
     "url": "^0.11.4"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/pg": "^8.20.0",
     "cors": "^2.8.6"
   }
 }
