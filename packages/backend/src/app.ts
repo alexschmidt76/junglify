@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 
+import auth from './routes/auth.route.js';
+
 const app = express();
 
 app.use(cors({
@@ -11,9 +13,8 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.set('trust proxy', true);
 
-app.get('/', (_req, res) => {
-  res.send('server is running');
-});
+app.use('/auth/*', auth);
 
 export default app;
