@@ -20,7 +20,8 @@
     "dev": "tsc && node ./dist/server.js",
     "test": "\"echo \\\"No tests yet\\\" && exit 0\"",
     "build": "tsc",
-    "lint": "tslint -c tslint.json src/**/*.ts",
+    "lint": "eslint src/",
+    "check-types": "tsc --noEmit",
     "prepublish": "npm run build"
   },
   "files": [
@@ -39,9 +40,12 @@
     "url": "^0.11.4"
   },
   "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/pg": "^8.20.0",
-    "cors": "^2.8.6"
+    "cors": "^2.8.6",
+    "eslint": "^9.39.1"
   }
 }
