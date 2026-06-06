@@ -1,0 +1,7 @@
+CREATE TABLE stash (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+    banana_count INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+)
