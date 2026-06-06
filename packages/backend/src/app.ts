@@ -15,6 +15,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', true);
 
-app.use('/auth/*', auth);
+app.use('/auth/*path', auth);
 
 export default app;

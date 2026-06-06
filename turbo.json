@@ -4,9 +4,8 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "passThroughEnv": ["DB_PUBLIC_URL", "PGHOST", "PGUSER", "PGPASSWORD", "PGDATABASE", "PGPORT"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+      "outputs": ["dist/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
@@ -14,9 +13,16 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
+    "start": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "persistent": true,
+      "passThroughEnv": ["DB_URL", "PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET"]
+    },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "passThroughEnv": ["DB_URL", "PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET"]
     }
   }
 }
