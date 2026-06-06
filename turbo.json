@@ -1,5 +1,4 @@
 {
-  "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
   "tasks": {
     "build": {
@@ -17,12 +16,16 @@
       "dependsOn": ["build"],
       "cache": false,
       "persistent": true,
-      "passThroughEnv": ["DB_URL", "PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET"]
+      "passThroughEnv": ["PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET", "PGHOST", "PGUSER", "PGPASSWORD", "PGDATABASE"]
     },
     "dev": {
       "cache": false,
       "persistent": true,
-      "passThroughEnv": ["DB_URL", "PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET"]
+      "passThroughEnv": ["PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET", "PGHOST", "PGUSER", "PGPASSWORD", "PGDATABASE"]
+    },
+    "migrate": {
+      "cache": false,
+      "passThroughEnv": ["DB_PUBLIC_URL"]
     }
   }
 }
