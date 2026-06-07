@@ -1,0 +1,6 @@
+{
+    "functions": {
+        "packages/backend/api/index.ts": {}
+    },
+    "rewrites": [{ "source": "/(.*)", "destination": "/packages/backend/api/index" }]
+}
