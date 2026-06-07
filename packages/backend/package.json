@@ -18,7 +18,7 @@
   "main": "./dist/server.js",
   "scripts": {
     "dev": "tsc && node --env-file=.env ./dist/server.js",
-    "start": "node --env-file=.env ./dist/server.js",
+    "start": "node ./dist/server.js",
     "test": "\"echo \\\"No tests yet\\\" && exit 0\"",
     "build": "tsc",
     "lint": "eslint src/",
