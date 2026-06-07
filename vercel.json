@@ -1,6 +1,6 @@
 {
     "functions": {
-        "packages/backend/api/index.ts": {}
+        "packages/backend/api/index.ts": { "maxDuration": 10 }
     },
     "rewrites": [{ "source": "/(.*)", "destination": "/packages/backend/api/index" }]
 }
