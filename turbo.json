@@ -16,12 +16,18 @@
       "dependsOn": ["build"],
       "cache": false,
       "persistent": true,
-      "passThroughEnv": ["PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET", "DB_PUBLIC_URL", "DB_URL"]
+      "passThroughEnv": [
+        "PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET", "DB_PUBLIC_URL", "DB_URL",
+        "PGDATABASE", "PGHOST", "PGPASSWORD", "PGUSER"
+      ]
     },
     "dev": {
       "cache": false,
       "persistent": true,
-      "passThroughEnv": ["PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET", "DB_PUBLIC_URL", "DB_URL"]
+      "passThroughEnv": [
+        "PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET", "DB_PUBLIC_URL", "DB_URL",
+        "PGDATABASE", "PGHOST", "PGPASSWORD", "PGUSER"
+      ]
     },
     "migrate": {
       "cache": false,
