@@ -3,11 +3,12 @@ import cors from 'cors';
 
 import auth from './routes/auth.route.js';
 import health from './routes/health.route.js';
+import errorHandler from './middleware/error.middleware.js';
 
 const app = express();
 
 app.use(cors({
-  origin: [`chrome-extension://${process.env.EXTENSION_ID}`, 'http://localhost:5173'],
+  origin: [`chrome-extension://${process.env.EXTENSION_ID}`],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -18,5 +19,7 @@ app.set('trust proxy', true);
 
 app.use('/auth/*path', auth);
 app.use('/health', health);
+
+app.use(errorHandler);
 
 export default app;
