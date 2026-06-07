@@ -8,9 +8,9 @@ if (!url) {
 }
 
 const sql = postgres(url, {
-    max: 20,
-    idle_timeout: 30000,
-    connect_timeout: 2000
+    max: 1,
+    connect_timeout: 10,
+    ssl: 'require',
 });
 
 export default sql;
