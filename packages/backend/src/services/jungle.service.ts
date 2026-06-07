@@ -21,15 +21,21 @@ export const getByIdOrUrl = async (id: UUID | null, url: string | null) => {
     return jungle;
 };
 
-export const update = async (jungleData: JungleSchema) => {
-    const { id, ...updateData } = jungleData;
-    if (!id) throw new Error('Jungle id is required for update');
+export const update = async (id: UUID, updateData: JungleSchema) => {
+    // check to make sure no update data is malicious
+    for (const key in updateData) {
+        if (['id', 'planted_by_user_id', 'url', 'planted_at'].includes(key)) {
+            throw new Error(`Invalid field in update data: ${key}`);
+        }
+    }
+
     const [updatedJungle] = await sql`
         UPDATE jungles
         SET ${sql(updateData)}
         WHERE id = ${id}
         RETURNING *
     `;
+
     return updatedJungle;
 }
 

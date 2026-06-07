@@ -4,8 +4,9 @@ import * as jungleController from '../controllers/jungle.controller.js';
 const jungle = Router();
 
 jungle.post('/', jungleController.create);
-jungle.get('/:id', jungleController.get);
-jungle.put('/:id', jungleController.update);
-jungle.delete('/:id', jungleController.deforrest);
+jungle.get('/getById/:id', jungleController.getById);
+jungle.get('/getByUrl/:url', jungleController.getByUrl);
+jungle.put('/update/:id', jungleController.update);
+jungle.delete('/deforrest/:id', jungleController.deforrest);
 
 export default jungle;
