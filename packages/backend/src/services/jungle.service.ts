@@ -1,11 +1,19 @@
-import db from '../db/db.connection.js';
+import sql from '../db/db.connection.js';
 
-export const create = async (data: any) => {
-    // Implementation for creating a jungle
+import { JungleType } from '../typings/jungleSchemea.js';
+import UUID from '../typings/uuid.js';
+
+export const create = async (planted_by_user_id: UUID, url: string, jungle_type: JungleType) => {
+    const [jungle] = await sql`
+        INSERT INTO jungles (planted_by_user_id, url, jungle_type)
+        VALUES (${planted_by_user_id}, ${url}, ${jungle_type})
+        RETURNING *
+    `;
+    return jungle;
 };
 
-export const get = async (id: string) => {
-    // Implementation for getting a jungle
+export const getByIdOrUrl = async (id: UUID | null, url: string | null) => {
+    
 }
 
 export const update = async (id: string, data: any) => {
