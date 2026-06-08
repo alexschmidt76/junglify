@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/health", "destination": "dist/api/health" },
+    { "source": "/jungles", "destination": "dist/api/jungles" },
+    { "source": "/jungles/:path*", "destination": "dist/api/jungles/:path*" },
+    { "source": "/auth/:path*", "destination": "dist/api/auth/:path*" }
+  ]
+}
+

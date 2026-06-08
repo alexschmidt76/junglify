@@ -1,9 +1,8 @@
 import sql from '../db/db.connection.js';
 
 import type JungleSchema from '../typings/jungleSchemea.js';
-import type UUID from '../typings/uuid.js';
 
-export const create = async (url: string, planted_by_user_id: UUID | null) => {
+export const create = async (url: string, planted_by_user_id: string | null) => {
     const [jungle] = await sql`
         INSERT INTO jungles (planted_by_user_id, url, jungle_type)
         VALUES (${planted_by_user_id}, ${url}, ${planted_by_user_id ? 'owned' : 'wild'})
@@ -12,7 +11,7 @@ export const create = async (url: string, planted_by_user_id: UUID | null) => {
     return jungle;
 };
 
-export const getByIdOrUrl = async (id: UUID | null, url: string | null) => {
+export const getByIdOrUrl = async (id: string | null, url: string | null) => {
     if (!id && !url) throw new Error('Either id or url must be provided');
     const [jungle] = await sql`
         SELECT * FROM jungles
@@ -21,7 +20,7 @@ export const getByIdOrUrl = async (id: UUID | null, url: string | null) => {
     return jungle;
 };
 
-export const update = async (id: UUID, updateData: JungleSchema) => {
+export const update = async (id: string, updateData: JungleSchema) => {
     // check to make sure no update data is malicious
     for (const key in updateData) {
         if (['id', 'planted_by_user_id', 'url', 'planted_at'].includes(key)) {
@@ -39,7 +38,7 @@ export const update = async (id: UUID, updateData: JungleSchema) => {
     return updatedJungle;
 }
 
-export const deforrest = async (id: UUID) => {
+export const deforrest = async (id: string) => {
     const [deletedJungle] = await sql`
         DELETE FROM jungles
         WHERE id = ${id}
