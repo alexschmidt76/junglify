@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const sql = postgres(process.env.DB_PUBLIC_URL);
+const sql = postgres(process.env.DB_POOLER_URL);
 
 async function migrate() {
     // create migrations table if one doesn't exist

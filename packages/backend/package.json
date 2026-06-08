@@ -15,39 +15,23 @@
     "name": "Alex Schmidt"
   },
   "type": "module",
-  "main": "./dist/server.js",
   "scripts": {
-    "dev": "tsc && node --env-file=.env ./dist/server.js",
-    "start": "node ./dist/server.js",
-    "test": "\"echo \\\"No tests yet\\\" && exit 0\"",
     "build": "tsc",
-    "lint": "eslint src/",
     "check-types": "tsc --noEmit",
-    "prepublish": "npm run build",
+    "lint": "eslint src/",
+    "test": "echo \"No tests yet\" && exit 0",
     "migrate": "node --env-file=.env ./db/migrate.js"
   },
-  "files": [
-    "./bin/*",
-    "./dist/*"
-  ],
-  "typings": "./dist/server.d.ts",
   "dependencies": {
-    "@auth/express": "^0.12.2",
-    "@auth/pg-adapter": "^1.11.2",
-    "express": "^5.2.1",
-    "fs": "^0.0.1-security",
-    "path": "^0.12.7",
+    "better-auth": "^1.2.8",
     "pg": "^8.21.0",
     "postgres": "^3.4.9",
-    "url": "^0.11.4"
+    "vercel": "^54.9.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
     "@types/pg": "^8.20.0",
-    "cors": "^2.8.6",
     "eslint": "^9.39.1"
   }
 }
