@@ -11,6 +11,12 @@ export default function SignUpForm() {
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        const isValidUsername = /^[a-zA-Z0-9_-]{3,20}$/.test(username);
+        if (!isValidUsername) {
+            setErrorType("username");
+            setError(`Username may not contain any spaces or special characters other than "-" and "_"`)
+        }
         
         if (password !== confirmPassword) {
             setErrorType("password");
@@ -32,6 +38,7 @@ export default function SignUpForm() {
         <form onSubmit={handleSubmit}>
             <label>Email</label>
             <input value={email} onChange={e => setEmail(e.target.value)} type="email" required />
+            { errorType === "username" && <p>{error}</p>}
             <label>Username</label>
             <input value={username} onChange={e => setUsername(e.target.value)} type="username" required />
             { errorType === "password" && <p>{error}</p>}
