@@ -13,7 +13,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   const { url, planted_by_user_id } = req.body as { url?: string; planted_by_user_id?: string };
 
   if (!url) {
-    res.status(400).json({ error: 'URL is required' });
+    res.status(400).json({ error: 'URL is required to create a jungle' });
     return;
   }
 
