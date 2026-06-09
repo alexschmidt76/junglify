@@ -26,7 +26,8 @@
       "persistent": true,
       "passThroughEnv": [
         "PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET", "DB_POOLER_URL",
-        "DB_DATABASE", "DB_HOST", "DB_PASSWORD", "DB_USER"
+        "DB_DATABASE", "DB_HOST", "DB_PASSWORD", "DB_USER", "FRONTEND_URL",
+        "BETTER_AUTH_URL"
       ]
     },
     "migrate": {

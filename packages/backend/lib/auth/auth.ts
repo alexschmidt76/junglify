@@ -6,11 +6,8 @@ const trustedOrigins: string[] = [];
 if (process.env.EXTENSION_ID) trustedOrigins.push(process.env.EXTENSION_ID);
 if (process.env.FRONTEND_URL) trustedOrigins.push(process.env.FRONTEND_URL);
 
-export const auth = betterAuth({
-  database: {
-    db: sql,
-    type: 'postgresql'
-  },
+const auth = betterAuth({
+  database: sql,
   emailAndPassword: {
     enabled: true,
   },
@@ -19,3 +16,5 @@ export const auth = betterAuth({
   ],
   trustedOrigins: trustedOrigins
 });
+
+export default auth;
