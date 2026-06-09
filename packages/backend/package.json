@@ -20,7 +20,7 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint src/",
     "test": "echo \"No tests yet\" && exit 0",
-    "migrate": "node --env-file=.env ./db/migrate.js",
+    "migrate": "node --env-file=.env ./db/migrate.js"
   },
   "dependencies": {
     "@vercel/node": "^5.8.12",
