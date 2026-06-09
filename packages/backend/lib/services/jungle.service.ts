@@ -1,8 +1,6 @@
-import sql from '../db/db.connection.js';
+import type JungleSchema from '../typings/jungleSchemea.d.js';
 
-import type JungleSchema from '../typings/jungleSchemea.js';
-
-export const create = async (url: string, planted_by_user_id: string | null) => {
+export const createJungle = async (url: string, planted_by_user_id: string | null) => {
     const [jungle] = await sql`
         INSERT INTO jungles (planted_by_user_id, url, jungle_type)
         VALUES (${planted_by_user_id}, ${url}, ${planted_by_user_id ? 'owned' : 'wild'})

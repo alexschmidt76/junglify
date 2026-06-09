@@ -16,7 +16,7 @@
   },
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "dev": "vercel dev",
     "check-types": "tsc --noEmit",
     "lint": "eslint src/",
     "test": "echo \"No tests yet\" && exit 0",

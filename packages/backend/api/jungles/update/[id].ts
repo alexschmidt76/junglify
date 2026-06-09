@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { applyCors } from '../../../src/lib/cors.js';
-import { update } from '../../../src/services/jungle.service.js';
-import type JungleSchema from '../../../src/typings/jungleSchemea.js';
+import { applyCors } from '../../../lib/cors/cors.js';
+import { update } from '../../../lib/services/jungle.service.js';
+import type JungleSchema from '../../../lib/typings/jungleSchemea.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (applyCors(req, res)) return;
