@@ -1,30 +1,53 @@
+import { getSql } from '../utils/db.js';
+
 import type JungleSchema from '../typings/jungleSchemea.d.js';
 
 export const createJungle = async (url: string, planted_by_user_id: string | null) => {
+    const sql = getSql();
+
     const [jungle] = await sql`
         INSERT INTO jungles (planted_by_user_id, url, jungle_type)
         VALUES (${planted_by_user_id}, ${url}, ${planted_by_user_id ? 'owned' : 'wild'})
         RETURNING *
     `;
+
+    await sql.end();
     return jungle;
 };
 
-export const getByIdOrUrl = async (id: string | null, url: string | null) => {
-    if (!id && !url) throw new Error('Either id or url must be provided');
+export const getJungleById = async (id: string) => {
+    const sql = getSql();
+
     const [jungle] = await sql`
         SELECT * FROM jungles
-        WHERE id = ${id} OR url = ${url}
+        WHERE id = ${id}
     `;
+
+    await sql.end();
     return jungle;
 };
 
-export const update = async (id: string, updateData: JungleSchema) => {
+export const getJungleByUrl = async (url: string) => {
+    const sql = getSql();
+
+    const [jungle] = await sql`
+        SELECT * FROM jungles
+        WHERE url = ${url}
+    `;
+
+    await sql.end();
+    return jungle;
+};
+
+export const updateJungle = async (id: string, updateData: JungleSchema) => {
     // check to make sure no update data is malicious
-    for (const key in updateData) {
-        if (['id', 'planted_by_user_id', 'url', 'planted_at'].includes(key)) {
+    for (const key in Object.keys(updateData)) {
+        if (!['owner', 'jungle_type', 'last_visited_at', 'growth_stage'].includes(key)) {
             throw new Error(`Invalid field in update data: ${key}`);
         }
     }
+
+    const sql = getSql();
 
     const [updatedJungle] = await sql`
         UPDATE jungles
@@ -33,14 +56,19 @@ export const update = async (id: string, updateData: JungleSchema) => {
         RETURNING *
     `;
 
+    await sql.end();
     return updatedJungle;
 }
 
-export const deforrest = async (id: string) => {
+export const deleteJungle = async (id: string) => {
+    const sql = getSql();
+
     const [deletedJungle] = await sql`
         DELETE FROM jungles
         WHERE id = ${id}
         RETURNING *
     `;
+
+    await sql.end();
     return deletedJungle;
 }

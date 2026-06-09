@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { applyCors } from '../../../lib/cors/cors.js';
+import { applyCors } from '../../../lib/utils/cors.js';
 import { update } from '../../../lib/services/jungle.service.js';
 import type JungleSchema from '../../../lib/typings/jungleSchemea.js';
 
