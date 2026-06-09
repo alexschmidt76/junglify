@@ -1,7 +1,4 @@
--- Migrate from Auth.js to Better Auth.
--- Drops all existing auth + domain tables and recreates them with Better Auth schema.
--- Better Auth uses TEXT ids; Auth.js used INTEGER SERIAL.
-
+-- Run this migration to populate the DB with the necessary tables for junglify 0.1.0
 DROP TABLE IF EXISTS stashes CASCADE;
 DROP TABLE IF EXISTS jungle_connections CASCADE;
 DROP TABLE IF EXISTS jungles CASCADE;
@@ -57,7 +54,7 @@ CREATE TABLE "verification" (
   "updatedAt"   TIMESTAMP
 );
 
--- Domain tables (user_id columns now reference "user"("id") as TEXT)
+-- Domain tables
 CREATE TABLE jungles (
   id                  UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
   planted_by_user_id  TEXT        REFERENCES "user"("id") ON DELETE SET NULL,
