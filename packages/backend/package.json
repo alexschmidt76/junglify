@@ -21,7 +21,6 @@
     "lint": "eslint src/",
     "test": "echo \"No tests yet\" && exit 0",
     "migrate": "node --env-file=.env ./db/migrate.js",
-    "generate-schema": "node --env-file=.env ../../node_modules/auth/dist/index.mjs generate --config ./lib/auth/auth.ts"
   },
   "dependencies": {
     "@vercel/node": "^5.8.12",
