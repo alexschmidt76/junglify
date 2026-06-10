@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "1.0.0",
+  "version": "0.3.0",
   "description": "rest api for junglify's database",
   "homepage": "https://github.com/alexschmidt76/junglify#readme",
   "bugs": {
