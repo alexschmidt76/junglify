@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "rest api for junglify's database",
   "homepage": "https://github.com/alexschmidt76/junglify#readme",
   "bugs": {
@@ -16,6 +16,7 @@
   },
   "type": "module",
   "scripts": {
+    "build": "",
     "dev": "vercel dev",
     "check-types": "tsc --noEmit",
     "lint": "eslint src/",

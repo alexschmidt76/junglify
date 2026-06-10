@@ -1,7 +1,8 @@
 # API CHANGELOG
 
-VERSION | UPDATE INFO
---------|------------------------------------------------
-0.3.0   | Converted to serverless vercel api
-0.2.0   | BetterAuthJs set up
-0.1.0   | REST routes set up for jungle on express server
+VERSION | UPDATE INFO                                     | Date (yyyy-mm-dd)
+--------|-------------------------------------------------|-------------------
+0.3.1   | Updating env vars and fixing vercel deployment  | 2026-06-09
+0.3.0   | Converted to serverless vercel api              | 2026-06-07
+0.2.0   | BetterAuthJs set up                             | 2026-06-04
+0.1.0   | REST routes set up for jungle on express server | 2026-06-03
