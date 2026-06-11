@@ -23,7 +23,8 @@
   },
   "packageManager": "npm@11.12.1",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "allowScripts": {
     "esbuild@0.27.0": true
