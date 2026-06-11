@@ -3,9 +3,11 @@ import { applyCors } from '@/lib/utils/cors.js';
 
 export default function handler(req: VercelRequest, res: VercelResponse): void {
   if (applyCors(req, res)) return;
+
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method Not Allowed' });
     return;
   }
+  
   res.json({ status: 'ok' });
 }
