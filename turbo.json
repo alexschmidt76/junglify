@@ -17,22 +17,19 @@
       "cache": false,
       "persistent": true,
       "passThroughEnv": [
-        "PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET", "DB_POOLER_URL",
-        "DB_DATABASE", "DB_HOST", "DB_PASSWORD", "DB_USER"
+        "JUNGLIFY_WEBSITE_URL", "BETTER_AUTH_SECRET", "DEV_DATABASE_URL", "DATABASE_URL", "NODE_ENV"
       ]
     },
     "dev": {
       "cache": false,
       "persistent": true,
       "passThroughEnv": [
-        "PORT", "EXTENSION_ID", "BETTER_AUTH_SECRET", "DB_POOLER_URL",
-        "DB_DATABASE", "DB_HOST", "DB_PASSWORD", "DB_USER", "FRONTEND_URL",
-        "BETTER_AUTH_URL"
+        "JUNGLIFY_WEBSITE_URL", "BETTER_AUTH_SECRET", "DEV_DATABASE_URL", "DATABASE_URL", "NODE_ENV"
       ]
     },
     "migrate": {
       "cache": false,
-      "passThroughEnv": ["DB_PUBLIC_URL"]
+      "passThroughEnv": ["DEV_DATABASE_URL"]
     }
   }
 }
