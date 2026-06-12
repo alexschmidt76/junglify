@@ -1,6 +1,7 @@
 # WEBSITE CHANGELOG
 
-VERSION | UPDATE INFO
---------|----------------------------------
-0.2.0   | basic log in/sign up pages set up
-0.1.0   | basic landing page launches
+VERSION | UPDATE INFO                                    | Date (yyyy-mm-dd)
+--------|------------------------------------------------|-------------------
+0.2.1   | auth and shared react forms moved to /packages | 2026-06-11
+0.2.0   | basic log in/sign up pages set up              | 2026-06-06
+0.1.0   | basic landing page launches                    | 2026-06-06
