@@ -10,9 +10,12 @@ While in 'the jungle', you can find jungles that other users have planted and gr
 junglify/
 ├───apps/
 │   ├───api/ <- junglify serverless api (configured for vercel)
-│   └───web/ <- junglify.org astro project
+│   ├───web/ <- junglify.org astro project
+│   └───wxt-extension/ <- junglify browser extension
 ├───packages/ <- contains files that multiple apps use
+│   ├───auth/ <- get client auth fn
 │   ├───eslint.config/
+│   ├───react-components/ <- shared react components
 │   └───typescript.config/
 └───turbo.json <- monorepo config
 ```

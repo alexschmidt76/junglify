@@ -17,14 +17,14 @@
       "cache": false,
       "persistent": true,
       "passThroughEnv": [
-        "JUNGLIFY_WEBSITE_URL", "BETTER_AUTH_SECRET", "DEV_DATABASE_URL", "DATABASE_URL", "NODE_ENV"
+        "JUNGLIFY_WEBSITE_URL", "BETTER_AUTH_SECRET", "DEV_DATABASE_URL", "DATABASE_URL", "NODE_ENV", "BETTER_AUTH_URL"
       ]
     },
     "dev": {
       "cache": false,
       "persistent": true,
       "passThroughEnv": [
-        "JUNGLIFY_WEBSITE_URL", "BETTER_AUTH_SECRET", "DEV_DATABASE_URL", "DATABASE_URL", "NODE_ENV"
+        "JUNGLIFY_WEBSITE_URL", "BETTER_AUTH_SECRET", "DEV_DATABASE_URL", "DATABASE_URL", "NODE_ENV", "BETTER_AUTH_URL"
       ]
     },
     "migrate": {

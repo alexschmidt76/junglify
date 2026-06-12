@@ -1,11 +1,5 @@
-import { createAuthClient } from "better-auth/client";
-import { usernameClient } from "better-auth/client/plugins";
+import getAuthClient from "@repo/auth/auth-client";
 
-const authClient = createAuthClient({
-    baseURL: process.env.BETTER_AUTH_URL,
-    plugins: [
-        usernameClient()
-    ]
-});
+const authClient = getAuthClient();
 
 export default authClient;

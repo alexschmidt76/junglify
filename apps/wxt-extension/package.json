@@ -12,6 +12,8 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint .",
     "postinstall": "wxt prepare"
   },
   "dependencies": {
@@ -19,7 +21,10 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
     "@types/react": "^19.2.14",
+    "eslint": "^9.39.1",
     "@types/react-dom": "^19.2.3",
     "@wxt-dev/module-react": "^1.1.5",
     "typescript": "^5.9.3",

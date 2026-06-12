@@ -1,7 +1,7 @@
 {
-  "name": "@repo/auth",
+  "name": "@repo/react-components",
   "version": "1.0.0",
-  "description": "contains shared auth functions for the junglify apps",
+  "description": "collection of react components that are shared between muliple apps in junglify",
   "homepage": "https://github.com/alexschmidt76/junglify#readme",
   "bugs": {
     "url": "https://github.com/alexschmidt76/junglify/issues"
@@ -15,7 +15,6 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "tsx",
     "check-types": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,6 +22,7 @@
     "@repo/typescript-config": "*"
   },
   "exports": {
-    "./auth-client": "./auth-client.ts"
+    "./auth-forms/LogInForm": "./auth-forms/LogInForm.tsx",
+    "./auth-forms/SignUpForm": "./auth-forms/SignUpForm.tsx"
   }
 }

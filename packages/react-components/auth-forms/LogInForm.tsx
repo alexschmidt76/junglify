@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import authClient from '../auth/auth-client';
+import type { JungleAuthClient } from '../../auth/auth-client';
 
-export default function LogInForm() {
+export default function LogInForm({ authClient }: { authClient: JungleAuthClient }) {
     const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
+    const [password, setPassword] = useState(""); 
     const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {

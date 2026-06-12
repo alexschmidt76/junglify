@@ -1,12 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "./base.json",
+  "extends": ["./base.json", "./strict-flags.json"],
   "compilerOptions": {
     "lib": ["es2022"],
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "forceConsistentCasingInFileNames": true
+    "types": ["node"]
   }
 }

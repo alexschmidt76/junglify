@@ -1,5 +1,6 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": ["astro/tsconfigs/strict", "@repo/typescript-config/strict-flags"],
   "include": [
     ".astro/types.d.ts",
     "**/*"
