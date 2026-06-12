@@ -1,6 +1,6 @@
 {
   "name": "@repo/auth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "contains shared auth functions for the junglify apps",
   "homepage": "https://github.com/alexschmidt76/junglify#readme",
   "bugs": {
@@ -18,6 +18,9 @@
     "build": "tsx",
     "check-types": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "better-auth": "^1.6.15"
   },
   "devDependencies": {
     "@repo/typescript-config": "*"

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { JungleAuthClient } from '../../auth/auth-client';
+import type { JungleAuthClient } from '@repo/auth/auth-client';
 
 export default function LogInForm({ authClient }: { authClient: JungleAuthClient }) {
     const [name, setName] = useState("");

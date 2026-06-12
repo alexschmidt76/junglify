@@ -1,6 +1,6 @@
 {
   "name": "@repo/react-components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "collection of react components that are shared between muliple apps in junglify",
   "homepage": "https://github.com/alexschmidt76/junglify#readme",
   "bugs": {
@@ -17,6 +17,9 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@repo/auth": "*"
   },
   "devDependencies": {
     "@repo/typescript-config": "*"
