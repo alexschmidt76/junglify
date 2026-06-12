@@ -1,12 +1,17 @@
 import { betterAuth } from 'better-auth';
 import { bearer, username } from 'better-auth/plugins';
+import { PostgresJSDialect } from 'kysely-postgres-js';
 import sql from '../db/sql.js';
 import getTrustedOrigins from '../utils/trustedOrigins.js';
+import isDev from '../utils/isDev.js';
 
 const trustedOrigins = getTrustedOrigins();
 
 const auth = betterAuth({
-  database: sql,
+  database: {
+    dialect: new PostgresJSDialect({ postgres: sql }),
+    type: 'postgres',
+  },
   emailAndPassword: {
     enabled: true,
   },
@@ -17,7 +22,7 @@ const auth = betterAuth({
   trustedOrigins: trustedOrigins,
   advanced: {
     crossSubDomainCookies: {
-      enabled: process.env.NODE_ENV !== 'DEVELOPMENT',
+      enabled: !isDev,
       domain: '.junglify.org'
     }
   },

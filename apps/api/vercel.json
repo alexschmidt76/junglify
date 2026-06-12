@@ -1,8 +1,10 @@
 {
+  "buildCommand": "",
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/health", "destination": "/api/health" },
     { "source": "/jungles/:path*", "destination": "/api/jungles/:path*" },
-    { "source": "/auth/:path*", "destination": "/api/auth/:path*" }
+    { "source": "/auth/:path*", "destination": "/api/auth/:path*" },
+    { "source": "/api/auth/:path+", "destination": "/api/auth/catchall" }
   ]
 }

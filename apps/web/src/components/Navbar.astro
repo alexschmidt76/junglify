@@ -1,0 +1,12 @@
+---
+import UserNavMenu from "./UserNavMenu";
+
+---
+<nav class="bg-black fixed left-0 right-0 top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="/" class="text-3xl font-extrabold text-green-700">Junglify</a>
+            <UserNavMenu client:load />
+        </div>
+    </div>
+</nav>

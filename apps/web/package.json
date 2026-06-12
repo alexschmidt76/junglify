@@ -17,12 +17,14 @@
   "dependencies": {
     "@astrojs/react": "^5.0.7",
     "@astrojs/vercel": "^10.0.8",
+    "@repo/auth": "*",
+    "@repo/react-components": "*",
+    "@tailwindcss/vite": "^4.3.0",
     "@types/react-dom": "^19.2.3",
     "astro": "^6.4.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "@repo/react-components": "*",
-    "@repo/auth": "*"
+    "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",

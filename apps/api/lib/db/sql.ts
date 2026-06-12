@@ -1,7 +1,7 @@
 import postgres from 'postgres';
+import isDev from '../utils/isDev.js';
 
-const devEnv = process.env.NODE_ENV === 'DEVELOPMENT';
-const url = process.env[devEnv ? 'DEV_' : '' + 'DATABASE_URL'];
+const url = process.env[isDev ? 'DEV_DATABASE_URL' : 'DATABASE_URL'];
 
 if (!url) {
   throw new Error('DB_POOLER_URL environment variable is not set');
