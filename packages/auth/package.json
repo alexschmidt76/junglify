@@ -1,0 +1,25 @@
+{
+  "name": "auth",
+  "version": "1.0.0",
+  "description": "contains shared auth functions for the junglify apps",
+  "homepage": "https://github.com/alexschmidt76/junglify#readme",
+  "bugs": {
+    "url": "https://github.com/alexschmidt76/junglify/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexschmidt76/junglify.git"
+  },
+  "license": "ISC",
+  "author": "Alex Schmidt",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsx",
+    "check-types": "tsc --noEmit",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*"
+  }
+}
