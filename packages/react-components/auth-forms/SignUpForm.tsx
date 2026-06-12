@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { JungleAuthClient } from '../../auth/auth-client';
+import type { JungleAuthClient } from '@repo/auth/auth-client';
 
 export default function SignUpForm({ authClient }: { authClient: JungleAuthClient }) {
     const [email, setEmail] = useState("");
