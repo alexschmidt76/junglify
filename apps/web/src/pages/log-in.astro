@@ -3,5 +3,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import LogInFormIsland from "../components/LogInFormIsland";
 ---
 <BaseLayout title="Log In">
-    <LogInFormIsland client:load />
+    <div class="h-full flex bg-green-900">
+        <div class="m-auto">
+            <LogInFormIsland client:load />
+        </div>
+    </div>
 </BaseLayout>
