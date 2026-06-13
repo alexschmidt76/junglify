@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import FormError from '../FormError';
 import type { JungleAuthClient } from '@repo/auth/auth-client';
 
 export default function SignUpForm({ authClient }: { authClient: JungleAuthClient }) {
@@ -42,15 +43,15 @@ export default function SignUpForm({ authClient }: { authClient: JungleAuthClien
                 <div className='flex flex-col mx-auto [&_input]:bg-white/80 [&_input]:rounded-sm [&_input]:text-black [&_input]:px-0.5'>
                     <label>Email</label>
                     <input value={email} onChange={e => setEmail(e.target.value)} type="email" required />
-                    { errorType === "username" && <p>{error}</p>}
+                    { errorType === "username" && <FormError message={error} /> }
                     <label>Username</label>
                     <input value={username} onChange={e => setUsername(e.target.value)} type="username" required />
-                    { errorType === "password" && <p>{error}</p>}
+                    { errorType === "password" && <FormError message={error} /> }
                     <label>Password</label>
                     <input value={password} onChange={e => setPassword(e.target.value)} type="password" required />
                     <label>Confirm Password</label>
                     <input value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} type="password" required />
-                    { errorType === "backend" && <p>{error}</p> }
+                    { errorType === "backend" && <FormError message={error} /> }
                 </div>
                 <button type="submit" className='hover:cursor-pointer bg-green-600 text-black font-semibold rounded-lg px-2 pt-0.5 pb-1 mx-auto hover:bg-green-500'>Sign Up</button>
             </form>

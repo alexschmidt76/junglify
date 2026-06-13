@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { JungleAuthClient } from '@repo/auth/auth-client';
+import FormError from '../FormError';
 
 export default function LogInForm({ authClient }: { authClient: JungleAuthClient }) {
     const [name, setName] = useState("");
@@ -33,7 +34,7 @@ export default function LogInForm({ authClient }: { authClient: JungleAuthClient
                         <label>Password</label>
                         <input value={password} onChange={e => setPassword(e.target.value)} type='password' required />
                     </div>
-                    { error && <p>{error}</p>}
+                    { error && <FormError message={error} /> }
                 </div>
                 <button type='submit' className='bg-green-600 text-black font-semibold rounded-lg px-2 pt-0.5 pb-1 mx-auto hover:bg-green-500 hover:cursor-pointer'>Log In</button>
             </form>
