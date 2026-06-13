@@ -2,12 +2,11 @@ import { useState } from 'react';
 
 import type { JungleAuthClient } from '@repo/auth/auth-client';
 import type { ErrorContext, SuccessContext } from 'better-auth/react';
-import type { RedirectType } from './types';
 
 import FormError from '../FormError';
 
 export default function LogInForm(
-    { authClient, redirectType }: { authClient: JungleAuthClient, redirectType: RedirectType }
+    { authClient, redirectUrl }: { authClient: JungleAuthClient, redirectUrl: string }
 ) {
     const [name, setName] = useState("");
     const [password, setPassword] = useState(""); 
@@ -23,10 +22,7 @@ export default function LogInForm(
             },
             onSuccess(ctx: SuccessContext) {
                 const username = ctx.data?.user?.username;
-                switch (redirectType) {
-                    case 'WEB':
-                        window.location.href = `${process.env.JUNGLIFY_WEBSITE_URL}/users/${username}`;
-                }
+                window.location.href = `${redirectUrl}/${username}`;
             },
             onError(ctx: ErrorContext) {
                 setLoading(false);
@@ -38,7 +34,7 @@ export default function LogInForm(
             await authClient.signIn.email({ 
                 email: name.trim(), 
                 password: password.trim(),
-                fetchOptions
+                fetchOptions: fetchOptions
             });
         } else {
             await authClient.signIn.username({ 

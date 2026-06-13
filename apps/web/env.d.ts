@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
     readonly PUBLIC_BETTER_AUTH_URL: string;
+    readonly PUBLIC_JUNGLIFY_WEBSITE_URL: string;
 }
 
 interface ImportMeta {
