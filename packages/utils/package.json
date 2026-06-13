@@ -1,0 +1,23 @@
+{
+  "name": "@repo/utils",
+  "version": "0.1.0",
+  "description": "utility functions used across junglify",
+  "homepage": "https://github.com/alexschmidt76/junglify#readme",
+  "bugs": {
+    "url": "https://github.com/alexschmidt76/junglify/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexschmidt76/junglify.git"
+  },
+  "license": "ISC",
+  "author": "Alex Schmidt",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "exports": {
+    "./isDev": "./isDev.ts"
+  }
+}

@@ -1,4 +1,4 @@
-import isDev from './isDev.js';
+import isDev from '@repo/utils/isDev';
 
 export default function getTrustedOrigins(): string[] {
     const envVarNames = ['CHROME_EXTENSION_URL', 'FIREFOX_EXTENSION_URL', 'JUNGLIFY_WEBSITE_URL'];
@@ -9,7 +9,7 @@ export default function getTrustedOrigins(): string[] {
         if (process.env[varName]) origins.push(process.env[varName]);
     }
 
-    if (isDev) origins.push('http://localhost:4321');
+    if (isDev()) origins.push('http://localhost:4321');
 
     return origins;
 }

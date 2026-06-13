@@ -46,9 +46,9 @@ describe('getTrustedOrigins', () => {
     expect(getTrustedOrigins()).toContain('http://localhost:4321');
   });
 
-  it('does not include localhost when NODE_ENV is development (lowercase)', () => {
+  it('includes localhost when NODE_ENV is development (lowercase)', () => {
     process.env.NODE_ENV = 'development';
-    expect(getTrustedOrigins()).not.toContain('http://localhost:4321');
+    expect(getTrustedOrigins()).toContain('http://localhost:4321');
   });
 
   it('does not include localhost in production', () => {
