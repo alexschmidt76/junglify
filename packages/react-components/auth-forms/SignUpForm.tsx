@@ -7,30 +7,31 @@ export default function SignUpForm({ authClient }: { authClient: JungleAuthClien
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [errorType, setErrorType] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const isValidUsername = /^[a-zA-Z0-9_-]{3,20}$/.test(username);
         if (!isValidUsername) {
-            setErrorType("username");
             setError(`Username may not contain any spaces or special characters other than "-" and "_"`)
         }
         
         if (password !== confirmPassword) {
-            setErrorType("password");
             setError("Passwords do not match");
             return;
         }
 
+        setLoading(true);
+
         const response = await authClient.signUp.email({
-            email: email, username: username, password: password, name: ""
+            email: email.trim(), username: username.trim(), password: password.trim(), name: ""
         });
 
         if (response.error) {
-            setErrorType("backend");
+            console.log(response);
+            setLoading(false);
             setError(response.error.message ?? "Something went wrong");
         }
     }
@@ -43,17 +44,17 @@ export default function SignUpForm({ authClient }: { authClient: JungleAuthClien
                 <div className='flex flex-col mx-auto [&_input]:bg-white/80 [&_input]:rounded-sm [&_input]:text-black [&_input]:px-0.5'>
                     <label>Email</label>
                     <input value={email} onChange={e => setEmail(e.target.value)} type="email" required />
-                    { errorType === "username" && <FormError message={error} /> }
                     <label>Username</label>
                     <input value={username} onChange={e => setUsername(e.target.value)} type="username" required />
-                    { errorType === "password" && <FormError message={error} /> }
                     <label>Password</label>
                     <input value={password} onChange={e => setPassword(e.target.value)} type="password" required />
                     <label>Confirm Password</label>
                     <input value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} type="password" required />
-                    { errorType === "backend" && <FormError message={error} /> }
+                    { error && <FormError message={error} /> }
                 </div>
-                <button type="submit" className='hover:cursor-pointer bg-green-600 text-black font-semibold rounded-lg px-2 pt-0.5 pb-1 mx-auto hover:bg-green-500'>Sign Up</button>
+                <button type="submit" className='hover:cursor-pointer bg-green-600 text-black font-semibold rounded-lg px-2 pt-0.5 pb-1 mx-auto hover:bg-green-500'>
+                    { loading ? 'Creating your account...' : 'Sign Up' }
+                </button>
             </form>
         </div>
     )
