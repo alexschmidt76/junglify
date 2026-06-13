@@ -3,5 +3,10 @@ import authClient from "../auth/auth-client";
 
 export default function SignInFormIsland() {
     const redirectUrl = import.meta.env.PUBLIC_JUNGLIFY_WEBSITE_URL + '/users';
-    return <LogInForm authClient={authClient} redirectUrl={redirectUrl} />
+    
+    const redirectFn = (username: string) => {
+        window.location.href = redirectUrl + username;
+    }
+    
+    return <LogInForm authClient={authClient} redirectFn={redirectFn} />
 }

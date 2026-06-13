@@ -5,7 +5,7 @@ import type { JungleAuthClient } from '@repo/auth/auth-client';
 import FormError from '../FormError';
 
 export default function SignUpForm(
-    { authClient, redirectUrl }: { authClient: JungleAuthClient, redirectUrl: string }
+    { authClient, redirectFn }: { authClient: JungleAuthClient, redirectFn?: (username: string) => void }
 ) {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -37,8 +37,10 @@ export default function SignUpForm(
                     setLoading(true);
                 },
                 onSuccess(ctx) {
-                    const username = ctx.data?.user?.username;
-                    window.location.href = `${redirectUrl}/${username}`;
+                    if (redirectFn) {
+                        const username = ctx.data?.user?.username;
+                        redirectFn(username);
+                    }
                 },
                 onError(ctx) {
                     setLoading(false);

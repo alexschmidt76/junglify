@@ -1,12 +1,19 @@
-import { ClientFetchOption } from "better-auth";
-import { createAuthClient } from "better-auth/client";
+import { createAuthClient, SuccessContext } from "better-auth/client";
 import { usernameClient } from "better-auth/client/plugins";
 
-const getAuthClient = (baseURL: string, fetchOptions: ClientFetchOption = {}) => createAuthClient({
+type FetchOptions = {
+    onSuccess(ctx: SuccessContext): void;
+    auth: {
+        type: string;
+        token: () => Promise<string>;
+    };
+}
+
+const getAuthClient = (baseURL: string, fetchOptions?: FetchOptions) => createAuthClient({
     baseURL,
     plugins: [usernameClient()],
-    fetchOptions
-})
+    fetchOptions: fetchOptions ? fetchOptions : {}
+});
 
 export type JungleAuthClient = ReturnType<typeof getAuthClient>;
 
