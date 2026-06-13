@@ -1,0 +1,10 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProfileSettings from "../../components/ProfileSettings.tsx"
+
+export const prerender = false;
+const username = Astro.params.username || '';
+---
+<BaseLayout title={username}>
+    <ProfileSettings client:load username={username}/>
+</BaseLayout>

@@ -12,7 +12,7 @@ export default function UserNavMenu() {
 
     return (
         <p className="text-green-700">
-            Welcome back to the jungle <a href={`/users/${session.data.user.username}/account-info`} className="text-green-700 hover:text-green-500 hover:font-bold">{session.data.user.username}</a>!
+            Welcome back to the jungle <a href={`/users/${session.data.user.username}`} className="text-green-700 hover:text-green-500 hover:font-bold">{session.data.user.username}</a>!
         </p>
     ) 
 }
