@@ -3,5 +3,9 @@ import BaseLayout from "../layouts/BaseLayout.astro"
 import SignUpFormIsland from "../components/SignUpFormIsland"
 ---
 <BaseLayout title="Sign Up">
-    <SignUpFormIsland client:load />
+    <div class="h-full flex bg-green-900">
+        <div class="m-auto">
+            <SignUpFormIsland client:load />
+        </div>
+    </div>
 </BaseLayout>
