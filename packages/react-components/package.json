@@ -25,7 +25,7 @@
     "@repo/typescript-config": "*"
   },
   "exports": {
-    "./auth-forms/LogInForm": "./auth-forms/LogInForm.tsx",
-    "./auth-forms/SignUpForm": "./auth-forms/SignUpForm.tsx"
+    "./auth-forms/*": "./auth-forms/*.tsx",
+    "./FormError": "./FormError.tsx"
   }
 }
