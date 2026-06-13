@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import FormError from '../FormError';
+
 import type { JungleAuthClient } from '@repo/auth/auth-client';
+import type { RedirectType } from './types';
+
+import FormError from '../FormError';
 
 export default function SignUpForm(
-    { authClient, redirectUrl }: { authClient: JungleAuthClient, redirectUrl: string }
+    { authClient, redirectType }: { authClient: JungleAuthClient, redirectType: RedirectType }
 ) {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -25,18 +28,29 @@ export default function SignUpForm(
             return;
         }
 
-        setLoading(true);
-
-        const response = await authClient.signUp.email({
-            email: email.trim(), username: username.trim(), password: password.trim(), name: ""
+        await authClient.signUp.email({
+            email: email.trim(), 
+            username: username.trim(), 
+            password: password.trim(), 
+            name: "",
+            fetchOptions: {
+                onRequest() {
+                    setLoading(true);
+                },
+                onSuccess(ctx) {
+                    const username = ctx.data?.user?.username;
+                    switch (redirectType) {
+                        case 'WEB':
+                            window.location.href = `${process.env.JUNGLIFY_WEBSITE_URL}/users/${username}`;
+                    }
+                },
+                onError(ctx) {
+                    setLoading(false);
+                    setError(ctx.error?.message)
+                }
+            }
         });
 
-        if (response.error) {
-            setLoading(false);
-            setError(response.error.message ?? "Something went wrong");
-        } else {
-            window.location.href = redirectUrl;
-        }
     }
 
     return (

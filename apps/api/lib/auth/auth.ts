@@ -7,7 +7,10 @@ import isDev from '../utils/isDev.js';
 
 const trustedOrigins = getTrustedOrigins();
 
+if (!process.env.BETTER_AUTH_URL) throw new Error('BETTER_AUTH_URL env var is required')
+
 const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL,
   database: {
     dialect: new PostgresJSDialect({ postgres: sql }),
     type: 'postgres',

@@ -1,26 +1,51 @@
 import { useState } from 'react';
+
 import type { JungleAuthClient } from '@repo/auth/auth-client';
+import type { ErrorContext, SuccessContext } from 'better-auth/react';
+import type { RedirectType } from './types';
+
 import FormError from '../FormError';
 
 export default function LogInForm(
-    { authClient, redirectUrl }: { authClient: JungleAuthClient, redirectUrl: string }
+    { authClient, redirectType }: { authClient: JungleAuthClient, redirectType: RedirectType }
 ) {
     const [name, setName] = useState("");
     const [password, setPassword] = useState(""); 
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const response = 
-            name.includes('@')
-            ? await authClient.signIn.email({ email: name.trim(), password: password.trim() })
-            : await authClient.signIn.username({ username: name.trim(), password: password.trim() });
-
-        if (response.error) {
-            setError(response.error.message ?? "Something went wrong");
+        const fetchOptions = {
+            onRequest() {
+                setLoading(true);
+            },
+            onSuccess(ctx: SuccessContext) {
+                const username = ctx.data?.user?.username;
+                switch (redirectType) {
+                    case 'WEB':
+                        window.location.href = `${process.env.JUNGLIFY_WEBSITE_URL}/users/${username}`;
+                }
+            },
+            onError(ctx: ErrorContext) {
+                setLoading(false);
+                setError(ctx.error?.message)
+            }
+        }
+        
+        if (name.includes('@')) {
+            await authClient.signIn.email({ 
+                email: name.trim(), 
+                password: password.trim(),
+                fetchOptions
+            });
         } else {
-            window.location.href = redirectUrl;
+            await authClient.signIn.username({ 
+                username: name.trim(), 
+                password: password.trim(), 
+                fetchOptions
+            });
         }
     }
 
@@ -45,7 +70,9 @@ export default function LogInForm(
                     </div>
                     { error && <FormError message={error} /> }
                 </div>
-                <button type='submit' className='bg-green-600 text-black font-semibold rounded-lg px-2 pt-0.5 pb-1 mx-auto hover:bg-green-500 hover:cursor-pointer'>Log In</button>
+                <button type='submit' className='bg-green-600 text-black font-semibold rounded-lg px-2 pt-0.5 pb-1 mx-auto hover:bg-green-500 hover:cursor-pointer'>
+                    { loading ? 'Logging you in...' : 'Log In' }
+                </button>
             </form>
         </div>
     )
