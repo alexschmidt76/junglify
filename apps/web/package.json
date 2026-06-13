@@ -1,8 +1,8 @@
 {
   "name": "website",
   "type": "module",
-  "version": "0.2.1",
-  "description": "frontend website for junglify",
+  "version": "0.3.0",
+  "description": "frontend web app for junglify",
   "engines": {
     "node": ">=22.12.0"
   },
