@@ -1,6 +1,6 @@
 {
   "name": "@repo/react-components",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "collection of react components that are shared between muliple apps in junglify",
   "homepage": "https://github.com/alexschmidt76/junglify#readme",
   "bugs": {

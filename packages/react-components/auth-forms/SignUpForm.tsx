@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
 import type { JungleAuthClient } from '@repo/auth/auth-client';
-import type { RedirectType } from './types';
 
 import FormError from '../FormError';
 
 export default function SignUpForm(
-    { authClient, redirectType }: { authClient: JungleAuthClient, redirectType: RedirectType }
+    { authClient, redirectUrl }: { authClient: JungleAuthClient, redirectUrl: string }
 ) {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -39,10 +38,7 @@ export default function SignUpForm(
                 },
                 onSuccess(ctx) {
                     const username = ctx.data?.user?.username;
-                    switch (redirectType) {
-                        case 'WEB':
-                            window.location.href = `${process.env.JUNGLIFY_WEBSITE_URL}/users/${username}`;
-                    }
+                    window.location.href = `${redirectUrl}/${username}`;
                 },
                 onError(ctx) {
                     setLoading(false);
