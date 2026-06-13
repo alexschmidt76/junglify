@@ -2,7 +2,9 @@ import { useState } from 'react';
 import type { JungleAuthClient } from '@repo/auth/auth-client';
 import FormError from '../FormError';
 
-export default function LogInForm({ authClient }: { authClient: JungleAuthClient }) {
+export default function LogInForm(
+    { authClient, redirectUrl }: { authClient: JungleAuthClient, redirectUrl: string }
+) {
     const [name, setName] = useState("");
     const [password, setPassword] = useState(""); 
     const [error, setError] = useState("");
@@ -12,11 +14,13 @@ export default function LogInForm({ authClient }: { authClient: JungleAuthClient
 
         const response = 
             name.includes('@')
-            ? await authClient.signIn.email({ email: name, password: password })
-            : await authClient.signIn.username({ username: name, password: password });
+            ? await authClient.signIn.email({ email: name.trim(), password: password.trim() })
+            : await authClient.signIn.username({ username: name.trim(), password: password.trim() });
 
         if (response.error) {
             setError(response.error.message ?? "Something went wrong");
+        } else {
+            window.location.href = redirectUrl;
         }
     }
 
@@ -24,7 +28,12 @@ export default function LogInForm({ authClient }: { authClient: JungleAuthClient
         <div className='flex mx-auto w-min p-4 bg-black text-xl text-green-600 rounded-2xl'>
             <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
                 <h1 className='text-green-500 text-2xl font-bold mx-auto'>Log In to Junglify</h1>
-                <p className='text-white/50 text-lg mx-auto'>New to Junglify? <a href='/sign-up' className='text-green-800 hover:font-bold'>Sign Up Here</a></p>
+                <p className='text-white/50 text-lg mx-auto'>
+                    {'New to Junglify? '}
+                    <a href='/sign-up' className='text-green-800 hover:font-bold'>
+                        Sign Up Here
+                    </a>
+                </p>
                 <div className='flex flex-col mx-auto [&_input]:bg-white/80 [&_input]:rounded-sm'>
                     <div className='flex flex-col mx-auto'>
                         <label>Email/Username</label>

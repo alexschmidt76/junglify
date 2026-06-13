@@ -2,7 +2,9 @@ import { useState } from 'react';
 import FormError from '../FormError';
 import type { JungleAuthClient } from '@repo/auth/auth-client';
 
-export default function SignUpForm({ authClient }: { authClient: JungleAuthClient }) {
+export default function SignUpForm(
+    { authClient, redirectUrl }: { authClient: JungleAuthClient, redirectUrl: string }
+) {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -30,9 +32,10 @@ export default function SignUpForm({ authClient }: { authClient: JungleAuthClien
         });
 
         if (response.error) {
-            console.log(response);
             setLoading(false);
             setError(response.error.message ?? "Something went wrong");
+        } else {
+            window.location.href = redirectUrl;
         }
     }
 
