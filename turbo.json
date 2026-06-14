@@ -19,7 +19,8 @@
       "persistent": true,
       "passThroughEnv": [
         "JUNGLIFY_WEBSITE_URL", "BETTER_AUTH_SECRET", "DEV_DATABASE_URL", "DATABASE_URL", 
-        "NODE_ENV", "BETTER_AUTH_URL", "PUBLIC_BETTER_AUTH_URL", "WXT_BETTER_AUTH_URL"
+        "NODE_ENV", "BETTER_AUTH_URL", "PUBLIC_BETTER_AUTH_URL", "WXT_BETTER_AUTH_URL",
+        "DEV_ADMIN_USER_IDS", "PROD_ADMIN_USER_IDS"
       ]
     },
     "dev": {
@@ -27,7 +28,8 @@
       "persistent": true,
       "passThroughEnv": [
         "JUNGLIFY_WEBSITE_URL", "BETTER_AUTH_SECRET", "DEV_DATABASE_URL", "DATABASE_URL", 
-        "NODE_ENV", "BETTER_AUTH_URL", "PUBLIC_BETTER_AUTH_URL", "WXT_BETTER_AUTH_URL"
+        "NODE_ENV", "BETTER_AUTH_URL", "PUBLIC_BETTER_AUTH_URL", "WXT_BETTER_AUTH_URL",
+        "DEV_ADMIN_USER_IDS", "PROD_ADMIN_USER_IDS"
       ]
     },
     "migrate": {

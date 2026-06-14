@@ -1,13 +1,16 @@
 import { betterAuth } from 'better-auth';
-import { bearer, username } from 'better-auth/plugins';
+import { bearer } from 'better-auth/plugins/bearer';
+import { username } from 'better-auth/plugins/username';
+import { admin } from 'better-auth/plugins/admin';
 import { PostgresJSDialect } from 'kysely-postgres-js';
 import sql from '../db/sql.js';
 import getTrustedOrigins from '../utils/trustedOrigins.js';
 import isDev from '../utils/isDev.js';
 
 const trustedOrigins = getTrustedOrigins();
+const adminIds = (isDev() ? process.env.DEV_ADMIN_USER_IDS : process.env.PROD_ADMIN_USER_IDS)?.split(',') || [];
 
-if (!process.env.BETTER_AUTH_URL) throw new Error('BETTER_AUTH_URL env var is required')
+if (!process.env.BETTER_AUTH_URL) throw new Error('BETTER_AUTH_URL env var is required');
 
 const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -25,7 +28,8 @@ const auth = betterAuth({
   },
   plugins: [
     username(),
-    bearer()
+    bearer(),
+    admin({ adminUserIds: adminIds })
   ],
   trustedOrigins: trustedOrigins,
   advanced: {

@@ -1,5 +1,5 @@
 import { useStore } from "better-auth/react";
-import authClient from "../auth/auth-client";
+import authClient from "../layouts/auth/auth-client";
 
 export default function UserNavMenu() {
     const session = useStore(authClient.useSession);

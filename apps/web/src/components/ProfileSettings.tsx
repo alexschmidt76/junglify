@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Popup from "reactjs-popup";
-import authClient from "../auth/auth-client"
+import authClient from "../layouts/auth/auth-client"
 import FormError from "../../../../packages/react-components/FormError";
 
-export default function ProfileSettings({ username }: { username: string }) {
+export default function ProfileSettings() {
     const [loggingOut, setLoggingOut] = useState(false);
     const [error, setError] = useState('');
     const [deletingProfile, setDeletingProfile] = useState(false);
@@ -75,7 +75,7 @@ export default function ProfileSettings({ username }: { username: string }) {
                         <form onSubmit={(e) => { e.preventDefault(); deleteProfile(close); }}>
                             <input type="text" value={deleteInput} onChange={(e) => {setDeleteInput(e.target.value)}} />
                             { wrongDeleteInput && <FormError message="Wrong input. Type 'delete'" /> }
-                            <button className="bg-red-500 text-white px-4 py-2 rounded-md" type="submit">PERMANENTLY DELETE JUNGLIFY ACCOUNT: {username}</button>
+                            <button className="bg-red-500 text-white px-4 py-2 rounded-md" type="submit">PERMANENTLY DELETE JUNGLIFY ACCOUNT</button>
                         </form>
                     </div>
                 </div>

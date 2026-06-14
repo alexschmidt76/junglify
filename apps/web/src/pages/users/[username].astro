@@ -8,7 +8,7 @@ const username = Astro.params.username || '';
 <BaseLayout title={username}>
     <div class="flex">
         <div class="mx-auto my-16">
-            <ProfileSettings client:load username={username}/>
+            <ProfileSettings client:load />
         </div>
     </div>
 </BaseLayout>
