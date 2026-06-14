@@ -3,8 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+const DB_TO_MIGRATE = 'DEVELOPMENT'; // change to PRODUCTION to migrate to the production database
+const url = DB_TO_MIGRATE === 'DEVELOPMENT' ? process.env.DEV_DATABASE_URL : process.env.PROD_DATABASE_URL;
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const sql = postgres(process.env.DEV_DATABASE_URL);
+const sql = postgres(url);
 
 async function migrate() {
     // create migrations table if one doesn't exist

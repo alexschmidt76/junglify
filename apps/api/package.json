@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "api",
   "version": "0.3.3",
   "description": "rest api for junglify's database",
   "homepage": "https://github.com/alexschmidt76/junglify#readme",
@@ -22,7 +22,7 @@
     "lint": "eslint src/",
     "test": "vitest run",
     "test:watch": "vitest",
-    "migrate": "node --env-file=.env ./db_migration/migrate.js"
+    "migrate": "node --env-file=.env ./db_setup/migrate.js"
   },
   "dependencies": {
     "@vercel/node": "^5.8.12",

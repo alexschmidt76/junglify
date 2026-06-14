@@ -34,7 +34,7 @@
     },
     "migrate": {
       "cache": false,
-      "passThroughEnv": ["DEV_DATABASE_URL"]
+      "passThroughEnv": ["DEV_DATABASE_URL", "PROD_DATABASE_URL"]
     }
   }
 }
