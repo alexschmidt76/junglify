@@ -6,7 +6,7 @@ import type { ErrorContext, SuccessContext } from 'better-auth/react';
 import FormError from '../FormError';
 
 export default function LogInForm(
-    { authClient, redirectFn }: { authClient: JungleAuthClient, redirectFn?: (username: string) => void }
+    { authClient, redirectFn }: { authClient: JungleAuthClient, redirectFn?: (...params: string[]) => void | Promise<void> }
 ) {
     const [name, setName] = useState("");
     const [password, setPassword] = useState(""); 

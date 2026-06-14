@@ -5,7 +5,7 @@ import type { JungleAuthClient } from '@repo/auth/auth-client';
 import FormError from '../FormError';
 
 export default function SignUpForm(
-    { authClient, redirectFn }: { authClient: JungleAuthClient, redirectFn?: (username: string) => void }
+    { authClient, redirectFn }: { authClient: JungleAuthClient, redirectFn?: (...params: string[]) => void | Promise<void> }
 ) {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");

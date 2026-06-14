@@ -1,9 +1,9 @@
 import getAuthClient from '@repo/auth/auth-client';
 import type { SuccessContext } from 'better-auth/react';
 
-const url = process.env.BETTER_AUTH_URL || '';
+const url = import.meta.env.WXT_BETTER_AUTH_URL || '';
 
-if (!url) throw new Error('BETTER_AUTH_URL env var cannot be empty');
+if (!url) throw new Error('WXT_BETTER_AUTH_URL env var cannot be empty');
 
 const fetchOptions = {
     onSuccess(ctx: SuccessContext) {
