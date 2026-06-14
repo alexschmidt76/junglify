@@ -6,5 +6,9 @@ export const prerender = false;
 const username = Astro.params.username || '';
 ---
 <BaseLayout title={username}>
-    <ProfileSettings client:load username={username}/>
+    <div class="flex">
+        <div class="mx-auto my-16">
+            <ProfileSettings client:load username={username}/>
+        </div>
+    </div>
 </BaseLayout>
