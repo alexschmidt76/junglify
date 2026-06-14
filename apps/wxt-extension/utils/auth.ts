@@ -6,9 +6,9 @@ const url = import.meta.env.WXT_BETTER_AUTH_URL || '';
 if (!url) throw new Error('WXT_BETTER_AUTH_URL env var cannot be empty');
 
 const fetchOptions = {
-    onSuccess(ctx: SuccessContext) {
+    async onSuccess(ctx: SuccessContext) {
         const token = ctx.response.headers.get('set-auth-token');
-        if (token) browser.storage.local.get({ bearerToken: token });
+        if (token) await browser.storage.local.set({ bearerToken: token });
     },
     auth: {
         type: 'Bearer',
