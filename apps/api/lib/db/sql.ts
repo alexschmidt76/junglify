@@ -1,5 +1,5 @@
 import postgres from 'postgres';
-import isDev from '@repo/utils/isDev';
+import isDev from '../utils/isDev.js';
 
 const url = process.env[isDev() ? 'DEV_DATABASE_URL' : 'DATABASE_URL'];
 

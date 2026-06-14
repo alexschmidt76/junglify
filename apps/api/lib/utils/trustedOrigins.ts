@@ -1,4 +1,4 @@
-import isDev from '@repo/utils/isDev';
+import isDev from './isDev.js';
 
 export default function getTrustedOrigins(): string[] {
     const envVarNames = ['CHROME_EXTENSION_URL', 'FIREFOX_EXTENSION_URL', 'JUNGLIFY_WEBSITE_URL'];

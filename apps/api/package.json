@@ -30,8 +30,7 @@
     "kysely": "^0.29.2",
     "kysely-postgres-js": "^3.0.0",
     "postgres": "^3.4.9",
-    "vercel": "^54.9.1",
-    "@repo/utils": "*"
+    "vercel": "^54.9.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
