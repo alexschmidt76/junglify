@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         return;
     }
 
-    const stash = getStashInfo(session.user.id);
+    const stash = await getStashInfo(session.user.id);
 
     res.json(stash);
 }
