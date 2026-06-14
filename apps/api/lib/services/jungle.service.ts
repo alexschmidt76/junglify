@@ -58,7 +58,7 @@ export const deleteJungle = async (id: string) => {
     return deletedJungle;
 }
 
-export const getStashJungleByUserId = async (userId: string) => {
+export const getStashJungleUrlByUserId = async (userId: string) => {
     const [url] = await sql`
         SELECT j.url
         FROM stashes s
