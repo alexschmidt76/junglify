@@ -1,5 +1,6 @@
 import { createAuthClient, SuccessContext } from "better-auth/client";
-import { usernameClient, adminClient } from "better-auth/client/plugins";
+import { usernameClient, adminClient, inferAdditionalFields } from "better-auth/client/plugins";
+import type { AuthType } from "../../apps/api/lib/auth/auth.js";
 
 type FetchOptions = {
     onSuccess(ctx: SuccessContext): void;
@@ -11,7 +12,7 @@ type FetchOptions = {
 
 const getAuthClient = (baseURL: string, fetchOptions?: FetchOptions) => createAuthClient({
     baseURL,
-    plugins: [usernameClient(), adminClient()],
+    plugins: [usernameClient(), adminClient(), inferAdditionalFields<AuthType>()],
     fetchOptions: fetchOptions ? fetchOptions : {}
 });
 

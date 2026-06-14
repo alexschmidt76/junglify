@@ -21,6 +21,13 @@ const auth = betterAuth({
   user: {
     deleteUser: {
       enabled: true
+    },
+    additionalFields: {
+      seed_count: {
+        type: "number",
+        required: true,
+        defaultValue: 5
+      }
     }
   },
   emailAndPassword: {
@@ -43,5 +50,7 @@ const auth = betterAuth({
     updateAge: 60 * 60 * 24, // slide expiry if >1 day has passed
   }
 });
+
+export type AuthType = typeof auth;
 
 export default auth;
