@@ -12,7 +12,7 @@ function AppRoutes({ store }: { store: ReturnType<typeof useStore> }) {
 
   return (
     <Routes>
-      <Route path='/' element={store.data ? <JunglifyPopup store={store} /> : <Navigate to="/log-in" />} />
+      <Route path='/' element={store.data ? <JunglifyPopup user={store.data.user} /> : <Navigate to="/log-in" />} />
       <Route path='/log-in' element={<LogInForm authClient={authClient} redirectFn={() => navigate('/')}/>} />
       <Route path='/sign-up' element={<SignUpForm authClient={authClient} redirectFn={() => navigate('/')}/>} />
     </Routes>

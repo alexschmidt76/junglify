@@ -51,4 +51,6 @@ const auth = betterAuth({
   }
 });
 
+export type AuthType = typeof auth;
+
 export default auth;
