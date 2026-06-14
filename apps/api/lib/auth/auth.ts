@@ -15,6 +15,11 @@ const auth = betterAuth({
     dialect: new PostgresJSDialect({ postgres: sql }),
     type: 'postgres',
   },
+  user: {
+    deleteUser: {
+      enabled: true
+    }
+  },
   emailAndPassword: {
     enabled: true,
   },
