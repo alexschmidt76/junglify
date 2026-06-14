@@ -21,5 +21,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
     const stash = await getStashInfo(session.user.id);
 
+    if (!stash) {
+        res.status(404).json({ error: 'No stash found' });
+        return;
+    }
+
     res.json(stash);
 }

@@ -51,6 +51,16 @@ describe('GET /stashes/my-stash', () => {
     expect(getStashInfo).toHaveBeenCalledWith('user-123');
   });
 
+  it('returns 404 when the user has no stash', async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue(mockSession as any);
+    vi.mocked(getStashInfo).mockResolvedValue(undefined);
+    const req = makeReq({ method: 'GET' });
+    const res = makeRes();
+    await handler(req, res as any);
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toEqual({ error: 'No stash found' });
+  });
+
   it('returns 401 when there is no session', async () => {
     vi.mocked(auth.api.getSession).mockResolvedValue(null);
     const req = makeReq({ method: 'GET' });

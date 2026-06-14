@@ -5,6 +5,7 @@
     { "source": "/health", "destination": "/api/health" },
     { "source": "/jungles/:path*", "destination": "/api/jungles/:path*" },
     { "source": "/auth/:path*", "destination": "/api/auth/:path*" },
-    { "source": "/api/auth/(.*)", "destination": "/api/auth/catchall" }
+    { "source": "/api/auth/(.*)", "destination": "/api/auth/catchall" },
+    { "source": "/stashes/my-stash", "destination": "/api/stashes/my-stash"}
   ]
 }
