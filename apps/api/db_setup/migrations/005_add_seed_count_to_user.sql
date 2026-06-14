@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "seed_count" INT NOT NULL DEFAULT 5;

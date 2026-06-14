@@ -21,6 +21,13 @@ const auth = betterAuth({
   user: {
     deleteUser: {
       enabled: true
+    },
+    additionalFields: {
+      seed_count: {
+        type: "number",
+        required: true,
+        defaultValue: 5
+      }
     }
   },
   emailAndPassword: {
