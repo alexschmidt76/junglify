@@ -1,7 +1,7 @@
 {
   "name": "website",
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "frontend web app for junglify",
   "engines": {
     "node": ">=22.12.0"
@@ -22,6 +22,7 @@
     "@tailwindcss/vite": "^4.3.0",
     "@types/react-dom": "^19.2.3",
     "astro": "^6.4.4",
+    "better-auth": "^1.6.15",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "tailwindcss": "^4.3.0"

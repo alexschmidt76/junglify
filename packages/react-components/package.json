@@ -21,8 +21,16 @@
   "dependencies": {
     "@repo/auth": "*"
   },
+  "peerDependencies": {
+    "better-auth": "^1.6.15",
+    "react": "^19.0.0"
+  },
   "devDependencies": {
-    "@repo/typescript-config": "*"
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@types/react": "^19.2.17",
+    "better-auth": "^1.6.15",
+    "react": "^19.2.7"
   },
   "exports": {
     "./auth-forms/*": "./auth-forms/*.tsx",

@@ -23,6 +23,7 @@
     "better-auth": "^1.6.15"
   },
   "devDependencies": {
+    "@repo/eslint-config": "*",
     "@repo/typescript-config": "*"
   },
   "exports": {
