@@ -1,4 +1,4 @@
-import { ReactEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import type User from '@/types/user';
 
