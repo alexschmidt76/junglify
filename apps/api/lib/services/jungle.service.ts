@@ -57,14 +57,3 @@ export const deleteJungle = async (id: string) => {
 
     return deletedJungle;
 }
-
-export const getStashJungleUrlByUserId = async (userId: string) => {
-    const [url] = await sql`
-        SELECT j.url
-        FROM stashes s
-        JOIN jungles j ON j.id = s.jungle_id
-        WHERE s.user_id = ${userId}
-    `;
-
-    return url;
-}
