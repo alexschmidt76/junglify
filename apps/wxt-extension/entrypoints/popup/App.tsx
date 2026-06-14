@@ -2,7 +2,6 @@ import { useStore } from '@nanostores/react';
 import { MemoryRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 import authClient from '@/utils/auth';
-import './App.css';
 
 import JunglifyPopup from './JunglifyPopup';
 import LogInForm from '@repo/react-components/auth-forms/LogInForm';
