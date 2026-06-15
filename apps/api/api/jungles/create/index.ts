@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { applyCors } from '../../../lib/utils/cors.js';
-import { createJungle } from '../../../lib/services/jungle.service.js';
+import { applyCors } from '@/lib/utils/cors.js';
+import { createJungle } from '@/lib/services/jungle.services.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (applyCors(req, res)) return;
@@ -10,7 +10,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return;
   }
 
-  const { url, planted_by_user_id } = req.body as { url?: string; planted_by_user_id?: string };
+  const { url, userId } = req.body as { url?: string; userId?: string };
 
   if (!url) {
     res.status(400).json({ error: 'URL is required to create a jungle' });
@@ -18,7 +18,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   }
 
   try {
-    const jungle = await createJungle(url, planted_by_user_id ?? null);
+    const jungle = await createJungle(url, userId ?? null);
     res.status(201).json(jungle);
   } catch (err) {
     console.error(err);
