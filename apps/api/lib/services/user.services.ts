@@ -1,6 +1,6 @@
 import sql from '../db/sql.js';
 
-export const getPopupInfo = async (userId) => {
+export const getPopupInfo = async (userId: string) => {
     const [stash] = await sql`
         SELECT j.url, s.banana_count
         FROM stashes s
