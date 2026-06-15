@@ -1,0 +1,18 @@
+import sql from '../db/sql.js';
+
+export const getPopupInfo = async (userId) => {
+    const [stash] = await sql`
+        SELECT j.url, s.banana_count
+        FROM stashes s
+        JOIN jungles j ON j.id = s.jungle_id
+        WHERE s.user_id = ${userId};
+    `;
+    
+    const [jungles] = await sql`
+        SELECT url
+        FROM jungles
+        WHERE owner_user_id = ${userId};
+    `;
+    
+    return { stash, jungles };
+}
