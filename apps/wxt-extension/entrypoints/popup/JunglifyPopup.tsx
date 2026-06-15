@@ -20,7 +20,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
         try {
             const { bearerToken } = await browser.storage.local.get('bearerToken');
 
-            const res = await fetch(apiUrl + '/jungles/create', {
+            await fetch(apiUrl + '/jungles/create', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${bearerToken ?? ''}`
