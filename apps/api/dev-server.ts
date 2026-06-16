@@ -71,7 +71,7 @@ async function main() {
   const { toNodeHandler } = await import('better-auth/node');
   const { default: auth } = await import('./lib/auth/auth.js');
   const { default: healthHandler } = await import('./api/health.js');
-  const { default: createJungleHandler } = await import('./api/jungles/create/index.js');
+  const { default: createJungleHandler } = await import('./api/jungles/create/user.js');
   const { default: myStashHandler } = await import('./api/stashes/my-stash.js');
 
   const authHandler = toNodeHandler(auth);

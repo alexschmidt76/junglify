@@ -26,6 +26,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
         e.preventDefault();
 
         if (!url) return;
+        console.log('URL HERE', url);
 
         setPlanting(true);
 
