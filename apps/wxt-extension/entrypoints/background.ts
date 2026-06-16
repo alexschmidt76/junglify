@@ -1,27 +1,43 @@
-import { getAuthUser, getPopupInfo } from "@/utils/background/helpers";
+import authClient from "@/utils/auth";
+import { protectedFetch } from "@/utils/protectedFetch";
+
+const apiUrl = process.env.WXT_API_URL || '';
 
 export default defineBackground(() => {
     void (async () => {
-        /* scrub cached data for expired info */
+        let isValid = true;
 
-        /* check for a logged in user */
-        const token = await getAuthUser();
-        
-        if (!token) return;
-        
-        /* get info for popup */
-        const { stash, jungleUrls, status, error } = await getPopupInfo(token);
-
-        if (error) {
+        try {
+            await authClient.getSession({
+                fetchOptions: {
+                    async onError() {
+                        await browser.storage.local.remove('bearerToken');
+                        isValid = false;
+                    }
+                }
+            });
+        } catch (error) {
             console.log(error);
-            if (status === 401) {
-                // bad token, re-auth
-            }
+            await browser.storage.local.remove('bearerToken');
+            isValid = false;
         }
 
-        await browser.storage.local.set('stash', stash);
-        await browser.storage.local.set('jungleUrls', jungleUrls);
+        if (isValid) {
+            try {
+                const res = await protectedFetch(apiUrl + '/users/popup-info', {
+                    method: 'GET'
+                });
         
+                const {stash, jungleUrls} = await res.json();
+                await browser.storage.local.set({ stash, jungleUrls });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+                
+
+        /* scrub cached data for expired info */
+
         /* concerning fetching jungles */
         
     })();

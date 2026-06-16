@@ -27,7 +27,7 @@ export default function LogInForm(
             },
             onError(ctx: ErrorContext) {
                 setLoading(false);
-                setError(ctx.error?.message)
+                setError(ctx.error?.message);
             }
         }
         
@@ -35,13 +35,13 @@ export default function LogInForm(
             await authClient.signIn.email({ 
                 email: name.trim(), 
                 password: password.trim(),
-                fetchOptions: fetchOptions
+                fetchOptions: fetchOptions,
             });
         } else {
             await authClient.signIn.username({ 
                 username: name.trim(), 
                 password: password.trim(), 
-                fetchOptions
+                fetchOptions: fetchOptions,
             });
         }
     }

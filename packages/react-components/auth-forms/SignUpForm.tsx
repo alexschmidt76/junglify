@@ -19,7 +19,7 @@ export default function SignUpForm(
 
         const isValidUsername = /^[a-zA-Z0-9_-]{3,20}$/.test(username);
         if (!isValidUsername) {
-            setError(`Username may not contain any spaces or special characters other than "-" and "_"`)
+            setError(`Username may not contain any spaces or special characters other than "-" and "_"`);
         }
         
         if (password !== confirmPassword) {
@@ -43,8 +43,8 @@ export default function SignUpForm(
                 },
                 onError(ctx) {
                     setLoading(false);
-                    setError(ctx.error?.message)
-                }
+                    setError(ctx.error?.message);
+                },
             }
         });
 

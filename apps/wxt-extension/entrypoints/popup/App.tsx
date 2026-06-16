@@ -9,12 +9,18 @@ import SignUpForm from '@repo/react-components/auth-forms/SignUpForm';
 
 function AppRoutes({ store }: { store: ReturnType<typeof useStore> }) {
   const navigate = useNavigate();
+  
+  const callback = async (...params: string[]) => {
+    const token = params[1] || '';
+    await browser.storage.local.set({ bearerToken: token });
+    navigate('/');
+  }
 
   return (
     <Routes>
       <Route path='/' element={store.data ? <JunglifyPopup user={store.data.user} /> : <Navigate to="/log-in" />} />
-      <Route path='/log-in' element={<LogInForm authClient={authClient} redirectFn={() => navigate('/')}/>} />
-      <Route path='/sign-up' element={<SignUpForm authClient={authClient} redirectFn={() => navigate('/')}/>} />
+      <Route path='/log-in' element={<LogInForm authClient={authClient} callbackFn={callback} />} />
+      <Route path='/sign-up' element={<SignUpForm authClient={authClient} callbackFn={callback} />} />
     </Routes>
   );
 }
