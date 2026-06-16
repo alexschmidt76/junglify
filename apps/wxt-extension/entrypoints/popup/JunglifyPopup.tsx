@@ -100,7 +100,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
         }
 
         void fetchStash();
-    }, []);
+    }, [apiUrl, url]);
 
     if (loading) return <div>Loading...</div>;
 
