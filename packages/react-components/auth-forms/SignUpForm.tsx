@@ -5,7 +5,7 @@ import type { JungleAuthClient } from '@repo/auth/auth-client';
 import FormError from '../FormError';
 
 export default function SignUpForm(
-    { authClient, redirectFn }: { authClient: JungleAuthClient, redirectFn?: (...params: string[]) => void | Promise<void> }
+    { authClient, callbackFn }: { authClient: JungleAuthClient, callbackFn: (...params: string[]) => void | Promise<void> }
 ) {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -36,11 +36,10 @@ export default function SignUpForm(
                 onRequest() {
                     setLoading(true);
                 },
-                onSuccess(ctx) {
-                    if (redirectFn) {
-                        const username = ctx.data?.user?.username;
-                        redirectFn(username);
-                    }
+                async onSuccess(ctx) {
+                    const username = ctx.data?.user?.username;
+                    const token = await ctx.response.headers.get('set-auth-token') || '';
+                    await callbackFn(username, token);
                 },
                 onError(ctx) {
                     setLoading(false);

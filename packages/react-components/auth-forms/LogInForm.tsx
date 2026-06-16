@@ -6,7 +6,7 @@ import type { ErrorContext, SuccessContext } from 'better-auth/react';
 import FormError from '../FormError';
 
 export default function LogInForm(
-    { authClient, redirectFn }: { authClient: JungleAuthClient, redirectFn?: (...params: string[]) => void | Promise<void> }
+    { authClient, callbackFn }: { authClient: JungleAuthClient, callbackFn: (...params: string[]) => void | Promise<void> }
 ) {
     const [name, setName] = useState("");
     const [password, setPassword] = useState(""); 
@@ -20,11 +20,10 @@ export default function LogInForm(
             onRequest() {
                 setLoading(true);
             },
-            onSuccess(ctx: SuccessContext) {
-                if (redirectFn) {
-                    const username = ctx.data?.user?.username;
-                    redirectFn(username);
-                }
+            async onSuccess(ctx: SuccessContext) {
+                const username = ctx.data?.user?.username;
+                const token = await ctx.response.headers.get('set-auth-token') || '';
+                await callbackFn(username, token);
             },
             onError(ctx: ErrorContext) {
                 setLoading(false);
