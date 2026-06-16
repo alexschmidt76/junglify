@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         return;
     }
 
-    const { stash, url } = await getPopupInfo(session.user.id);
+    const { stash, jungleUrls } = await getPopupInfo(session.user.id);
 
-    res.json({ stash, url });
+    res.json({ stash, jungleUrls });
 }

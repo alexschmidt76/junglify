@@ -8,11 +8,13 @@ export const getPopupInfo = async (userId: string) => {
         WHERE s.user_id = ${userId};
     `;
     
-    const [jungle]: [{ url: string }] = await sql`
+    const jungles: [{ url: string }] = await sql`
         SELECT url
         FROM jungles
         WHERE owner_user_id = ${userId};
     `;
+
+    const jungleUrls = jungles.map((j) => j.url);
     
-    return { stash, url: jungle?.url };
+    return { stash, jungleUrls };
 }
