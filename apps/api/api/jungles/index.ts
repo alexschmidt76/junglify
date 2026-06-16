@@ -16,7 +16,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
                 return;
             }
 
-            res.json(jungle);
+            res.status(200).json({ jungle });
         } else {
             res.status(200).json({ 
                 message: "this is the junglify api /jungles endpoint, use /jungles/[id] or /jungles?url=[url] to get a specific jungle",
