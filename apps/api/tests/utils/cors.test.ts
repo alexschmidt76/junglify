@@ -30,7 +30,7 @@ describe('applyCors', () => {
 
   it('sets CORS headers for a trusted origin', () => {
     const req = makeReq('GET', 'https://trusted.com');
-    const res = makeRes() as any;
+    const res = makeRes();
     applyCors(req, res);
     expect(res.setHeader).toHaveBeenCalledWith('Access-Control-Allow-Origin', 'https://trusted.com');
     expect(res.setHeader).toHaveBeenCalledWith('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -40,14 +40,14 @@ describe('applyCors', () => {
 
   it('does not set CORS headers for an untrusted origin', () => {
     const req = makeReq('GET', 'https://evil.com');
-    const res = makeRes() as any;
+    const res = makeRes();
     applyCors(req, res);
     expect(res.setHeader).not.toHaveBeenCalled();
   });
 
   it('does not set CORS headers when no origin header is present', () => {
     const req = makeReq('GET');
-    const res = makeRes() as any;
+    const res = makeRes();
     applyCors(req, res);
     expect(res.setHeader).not.toHaveBeenCalled();
   });
@@ -60,7 +60,7 @@ describe('applyCors', () => {
 
   it('returns true and sends 204 for OPTIONS from a trusted origin', () => {
     const req = makeReq('OPTIONS', 'https://trusted.com');
-    const res = makeRes() as any;
+    const res = makeRes();
     const result = applyCors(req, res);
     expect(result).toBe(true);
     expect(res.statusCode).toBe(204);
@@ -69,7 +69,7 @@ describe('applyCors', () => {
 
   it('returns true and sends 204 for OPTIONS from an untrusted origin', () => {
     const req = makeReq('OPTIONS', 'https://evil.com');
-    const res = makeRes() as any;
+    const res = makeRes();
     const result = applyCors(req, res);
     expect(result).toBe(true);
     expect(res.statusCode).toBe(204);
@@ -78,7 +78,7 @@ describe('applyCors', () => {
 
   it('sets CORS headers before handling OPTIONS', () => {
     const req = makeReq('OPTIONS', 'https://trusted.com');
-    const res = makeRes() as any;
+    const res = makeRes();
     applyCors(req, res);
     expect(res.setHeader).toHaveBeenCalledWith('Access-Control-Allow-Origin', 'https://trusted.com');
   });

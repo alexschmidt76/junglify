@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { applyCors } from '../../lib/utils/cors.js';
-import { getJungleById } from '../../lib/services/jungle.service.js';
+import { getJungleById } from '../../lib/services/jungle.services.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (applyCors(req, res)) return;

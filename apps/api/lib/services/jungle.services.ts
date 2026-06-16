@@ -2,10 +2,10 @@ import sql from '../db/sql.js';
 
 import type JungleSchema from '../typings/jungleSchemea.d.js';
 
-export const createJungle = async (url: string, plantedByUserId: string | null) => {
+export const createJungle = async (url: string, userId: string | null) => {
     const [jungle] = await sql`
         INSERT INTO jungles (planted_by_user_id, url, jungle_type)
-        VALUES (${plantedByUserId}, ${url}, ${plantedByUserId ? 'owned' : 'wild'})
+        VALUES (${userId}, ${url}, ${userId ? 'owned' : 'wild'})
         RETURNING *
     `;
 

@@ -14,7 +14,8 @@ export default defineConfig({
     environment: 'node',
     include: ['tests/**/*.test.ts'],
     env: {
-      DATABASE_URL: 'postgres://localhost/junglify_test',
+      NODE_ENV: 'DEVELOPMENT',
+      DEV_DATABASE_URL: 'postgres://localhost/junglify_test',
     },
   },
 });

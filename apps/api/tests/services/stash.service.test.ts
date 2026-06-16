@@ -5,10 +5,12 @@ vi.mock('@/lib/db/sql.js', () => ({
 }));
 
 import sql from '@/lib/db/sql.js';
-import { getStashInfo } from '@/lib/services/stash.services.js';
+import { createStash, getStashInfo } from '@/lib/services/stash.services.js';
 
+const mockUserId = 'userId-123';
+const mockUrl = 'http://url-123.com';
 const mockStash = {
-  url: 'https://example.com',
+  url: mockUrl,
   banana_count: 42,
 };
 
@@ -17,10 +19,36 @@ describe('stash service', () => {
     vi.clearAllMocks();
   });
 
+  describe('createStash', () => {
+    it("returns true when a new stash is successfully created", async () => {
+      vi.mocked(sql).mockResolvedValue({ count: 1 });
+      const result = await createStash(mockUrl, mockUserId);
+      expect(result).toEqual(true);
+    });
+
+    it('returns false when the new stash is not created', async () => {
+      vi.mocked(sql).mockResolvedValue({ count: 0 });
+      const result = await createStash(mockUrl, mockUserId);
+      expect(result).toEqual(false);
+    });
+
+    it('passes the url to the query', async () => {
+      vi.mocked(sql).mockResolvedValue({ count: 1 });
+      await createStash(mockUrl, mockUserId);
+      expect(vi.mocked(sql).mock.calls[0]).toContain(mockUrl);
+    });
+
+    it('passes the user id to the query', async () => {
+      vi.mocked(sql).mockResolvedValue({ count: 1 });
+      await createStash(mockUrl, mockUserId);
+      expect(vi.mocked(sql).mock.calls[0]).toContain(mockUserId);
+    });
+  })
+
   describe('getStashInfo', () => {
     it('returns the stash row when one is found', async () => {
       vi.mocked(sql).mockResolvedValue([mockStash]);
-      const result = await getStashInfo('user-123');
+      const result = await getStashInfo(mockUserId);
       expect(result).toEqual(mockStash);
     });
 
@@ -32,9 +60,8 @@ describe('stash service', () => {
 
     it('passes the user id to the query', async () => {
       vi.mocked(sql).mockResolvedValue([mockStash]);
-      await getStashInfo('user-123');
-      // postgres.js tagged template: ['user-123'] is the interpolated value
-      expect(vi.mocked(sql).mock.calls[0]).toContain('user-123');
+      await getStashInfo(mockUserId);
+      expect(vi.mocked(sql).mock.calls[0]).toContain(mockUserId);
     });
   });
 });

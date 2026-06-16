@@ -11,7 +11,7 @@ import {
   getJungleByUrl,
   updateJungle,
   deleteJungle,
-} from '@/lib/services/jungle.service.js';
+} from '@/lib/services/jungle.services.js';
 
 const mockJungle = {
   id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
@@ -81,39 +81,39 @@ describe('jungle service', () => {
     it('returns the updated jungle for valid fields', async () => {
       const updated = { ...mockJungle, growth_stage: 5 };
       vi.mocked(sql).mockResolvedValue([updated]);
-      const result = await updateJungle('id', { growth_stage: 5 } as any);
+      const result = await updateJungle('id', { growth_stage: 5 });
       expect(result).toMatchObject({ growth_stage: 5 });
     });
 
     it('accepts all four whitelisted fields', async () => {
       vi.mocked(sql).mockResolvedValue([mockJungle]);
-      const data = { jungle_type: 'owned' as const, growth_stage: 3, last_visited_at: new Date(), owner: 'user1' };
-      await expect(updateJungle('id', data as any)).resolves.toBeDefined();
+      const data = { jungle_type: 'owned', growth_stage: 3, last_visited_at: new Date(), owner: 'user1' };
+      await expect(updateJungle('id', data)).resolves.toBeDefined();
     });
 
     it('returns undefined when jungle not found', async () => {
       vi.mocked(sql).mockResolvedValue([]);
-      const result = await updateJungle('id', { growth_stage: 1 } as any);
+      const result = await updateJungle('id', { growth_stage: 1 });
       expect(result).toBeUndefined();
     });
 
     it('throws for the non-whitelisted field "url"', async () => {
-      await expect(updateJungle('id', { url: 'https://hack.com' } as any))
+      await expect(updateJungle('id', { url: 'https://hack.com' }))
         .rejects.toThrow('Invalid field in update data: url');
     });
 
     it('throws for the non-whitelisted field "id"', async () => {
-      await expect(updateJungle('id', { id: 'hacked' } as any))
+      await expect(updateJungle('id', { id: 'hacked' }))
         .rejects.toThrow('Invalid field in update data: id');
     });
 
     it('throws for the non-whitelisted field "planted_by_user_id"', async () => {
-      await expect(updateJungle('id', { planted_by_user_id: 'hacker' } as any))
+      await expect(updateJungle('id', { planted_by_user_id: 'hacker' }))
         .rejects.toThrow('Invalid field in update data: planted_by_user_id');
     });
 
     it('does not reach the database when validation fails', async () => {
-      await updateJungle('id', { url: 'https://hack.com' } as any).catch(() => {});
+      await updateJungle('id', { url: 'https://hack.com' }).catch(() => {});
       expect(vi.mocked(sql)).not.toHaveBeenCalled();
     });
   });

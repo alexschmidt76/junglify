@@ -5,18 +5,18 @@ vi.mock('@/lib/utils/cors.js', () => ({
   applyCors: vi.fn().mockReturnValue(false),
 }));
 
-vi.mock('@/lib/services/jungle.service.js', () => ({
+vi.mock('@/lib/services/jungle.services.js', () => ({
   createJungle: vi.fn(),
 }));
 
-import { createJungle } from '@/lib/services/jungle.service.js';
+import { createJungle } from '@/lib/services/jungle.services.js';
 import handler from '@/api/jungles/create/index.js';
 
 const mockJungle = {
   id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   url: 'https://example.com',
   jungle_type: 'wild',
-  planted_by_user_id: null,
+  userId: null,
 };
 
 describe('POST /jungles/create', () => {
@@ -33,15 +33,15 @@ describe('POST /jungles/create', () => {
     expect(res.body).toEqual(mockJungle);
   });
 
-  it('passes planted_by_user_id to the service when provided', async () => {
-    vi.mocked(createJungle).mockResolvedValue({ ...mockJungle, jungle_type: 'owned', planted_by_user_id: 'user1' });
-    const req = makeReq({ method: 'POST', body: { url: 'https://example.com', planted_by_user_id: 'user1' } });
+  it('passes userId to the service when provided', async () => {
+    vi.mocked(createJungle).mockResolvedValue({ ...mockJungle, jungle_type: 'owned', userId: 'user1' });
+    const req = makeReq({ method: 'POST', body: { url: 'https://example.com', userId: 'user1' } });
     const res = makeRes();
     await handler(req, res as any);
     expect(createJungle).toHaveBeenCalledWith('https://example.com', 'user1');
   });
 
-  it('passes null when planted_by_user_id is omitted', async () => {
+  it('passes null when userId is omitted', async () => {
     vi.mocked(createJungle).mockResolvedValue(mockJungle);
     const req = makeReq({ method: 'POST', body: { url: 'https://example.com' } });
     const res = makeRes();

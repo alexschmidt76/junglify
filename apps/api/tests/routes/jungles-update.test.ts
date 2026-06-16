@@ -5,11 +5,11 @@ vi.mock('@/lib/utils/cors.js', () => ({
   applyCors: vi.fn().mockReturnValue(false),
 }));
 
-vi.mock('@/lib/services/jungle.service.js', () => ({
+vi.mock('@/lib/services/jungle.services.js', () => ({
   updateJungle: vi.fn(),
 }));
 
-import { updateJungle } from '@/lib/services/jungle.service.js';
+import { updateJungle } from '@/lib/services/jungle.services.js';
 import handler from '@/api/jungles/update/[id].js';
 
 const mockJungle = {
