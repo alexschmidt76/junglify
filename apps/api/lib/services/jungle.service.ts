@@ -3,13 +3,12 @@ import sql from '../db/sql.js';
 import type JungleSchema from '../typings/jungleSchemea.d.js';
 
 export const createJungle = async (url: string, planted_by_user_id: string | null) => {
-    const [jungle] = await sql`
+    const { count } = await sql`
         INSERT INTO jungles (planted_by_user_id, url, jungle_type)
         VALUES (${planted_by_user_id}, ${url}, ${planted_by_user_id ? 'owned' : 'wild'})
-        RETURNING *
     `;
 
-    return jungle;
+    return count > 0;
 };
 
 export const getJungleById = async (id: string) => {
