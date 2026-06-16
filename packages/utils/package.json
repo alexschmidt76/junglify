@@ -1,6 +1,6 @@
 {
   "name": "@repo/utils",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "utility functions used across junglify",
   "homepage": "https://github.com/alexschmidt76/junglify#readme",
   "bugs": {
@@ -21,6 +21,7 @@
     "@repo/eslint-config": "*"
   },
   "exports": {
-    "./isDev": "./isDev.ts"
+    "./isDev": "./isDev.ts",
+    "./types/user": "./types/user.d.ts"
   }
 }
