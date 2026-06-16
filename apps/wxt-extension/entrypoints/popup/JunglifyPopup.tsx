@@ -18,6 +18,8 @@ export default function JunglifyPopup({ user }: { user: User }) {
     const [planting, setPlanting] = useState(false);
     const [seedCount, setSeedCount] = useState(user.seed_count || 0);
     const [plantError, setPlantError] = useState<null | string>(null);
+    const [popupError, setPopupError] = useState<null | string>(null);
+    const [refreshToggle, setRefreshToggle] = useState(false);
 
     const apiUrl = import.meta.env.WXT_API_URL;
     if (!apiUrl) throw new Error('WXT_API_URL env var must not be empty');
@@ -25,15 +27,19 @@ export default function JunglifyPopup({ user }: { user: User }) {
     const plantJungle = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
 
-        if (!url) return;
-        console.log('URL HERE', url);
+        if (!url) {
+            setPlantError("There's something wrong with this URL, try refreshing.");
+            return;
+        }
+
+        setPlantError(null);
 
         setPlanting(true);
 
         try {
             const { bearerToken } = await browser.storage.local.get('bearerToken');
 
-            const response = await fetch(apiUrl + '/jungles/create', {
+            const response = await fetch(apiUrl + '/jungles/create/user', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${bearerToken ?? ''}`
@@ -43,13 +49,15 @@ export default function JunglifyPopup({ user }: { user: User }) {
                 })
             });
 
-            if (response.status === 201) {
+            const { error, newSeedCount }: { error?: string, newSeedCount?: number } = await response.json();
+
+            if (!error) {
                 setJungleUrls([url, ...jungleUrls]);
-                setSeedCount(seedCount - 1);
+                if (newSeedCount) setSeedCount(newSeedCount);
                 setAtOwnJungle(true);
             } else {
-                const data: { error: string } = await response.json();
-                setPlantError(data.error);
+                setPlantError(error);
+                if (response.status === 422) setSeedCount(0);
             }
         } catch (error) {
             console.log(error)
@@ -63,7 +71,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
             if (tab?.url) setUrl(cleanUrl(tab.url));
         });
 
-        async function fetchStash() {
+        async function fetchPopupInfo() {
             setLoading(true);
 
             try {
@@ -76,34 +84,48 @@ export default function JunglifyPopup({ user }: { user: User }) {
                     }
                 });
 
-                if (!res.ok) return;
-
-                const data: { stash: StashInfo, jungleUrls: string[] } = await res.json();
-                setStash(data.stash);
-
-                const parsedUrls = data.jungleUrls.filter((e): e is string => typeof e === 'string');
-
-                if (url) {
-                    for (let i = 0; i < parsedUrls.length; i++) {
-                        if (parsedUrls[i] === url) {
-                            if (i > 0) {
-                                parsedUrls.unshift(parsedUrls.splice(i, 1)[0]!);
+                const data: { stash: StashInfo, jungleUrls: string[], error: string } = await res.json();
+                
+                if (data.error) {
+                    setPopupError(data.error);
+                } else {
+                    setStash(data.stash);
+    
+                    const urls = data.jungleUrls;
+    
+                    if (url !== null) {
+                        for (let i = 0; i < urls.length; i++) {
+                            //const u = urls[i];
+                            if (urls[i] === url) {
+                                if (i > 0) {
+                                    urls.unshift(urls.splice(i, 1)[0]!);
+                                }
+                                setJungleUrls(urls);
+                                setAtOwnJungle(true);
+                                i = urls.length;
                             }
-                            setJungleUrls(parsedUrls);
-                            setAtOwnJungle(true);
-                            i = parsedUrls.length;
                         }
                     }
                 }
+            } catch (error) {
+                console.log(error)
+                setPopupError("Internal server error")
             } finally {
                 setLoading(false);
             }
         }
 
-        void fetchStash();
-    }, [apiUrl, url]);
+        void fetchPopupInfo();
+    }, [apiUrl, url, refreshToggle]);
 
     if (loading) return <div>Loading...</div>;
+
+    if (popupError) return (
+        <div>
+            <div>{popupError}</div>
+            <button onClick={(e) => { e.preventDefault(); setRefreshToggle(!refreshToggle); }}>Refresh</button>
+        </div>
+    )
 
     return (
         <div className="flex w-min">

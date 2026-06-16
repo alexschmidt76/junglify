@@ -8,30 +8,25 @@ export const createUserJungle = async (url: string, userId: string | null) => {
             const [user] = await sql`
                 UPDATE "user"
                 SET seed_count = seed_count - 1
-                WHERE id = ${userId} AND seed count > 0
+                WHERE id = ${userId} AND seed_count > 0
                 RETURNING seed_count;
             `;
 
             if (!user) return { error: 422 }
 
             const { count } = await sql`
-                INSERT INTO jungles (planted_by_user_id, url, jungle_type)
-                SELECT ${userId}, ${url}, ${userId ? 'owned' : 'wild'}
+                INSERT INTO jungles (owner_user_id, planted_by_user_id, url, jungle_type)
+                SELECT ${userId}, ${userId}, ${url}, 'owned';
             `;
 
             if (count === 0) return { error: 500 };
-
-            await sql`
-            UPDATE "user" u
-            SET seed_count = u.seed_count - 1
-            WHERE 
-            `
 
             return user.seed_count;
         }));
 
         return { newSeedCount };
-    } catch {
+    } catch (error) {
+        console.log(error);
         return { error: 500 };
     }
     

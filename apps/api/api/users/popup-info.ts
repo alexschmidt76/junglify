@@ -19,7 +19,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         return;
     }
 
-    const { stash, jungleUrls } = await getPopupInfo(session.user.id);
+    const { stash, jungleUrls, error } = await getPopupInfo(session.user.id);
 
-    res.json({ stash, jungleUrls });
+    if (error) res.status(500).json({ error: "Internal server error" });
+
+    res.status(200).json({ stash, jungleUrls });
 }

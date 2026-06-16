@@ -26,9 +26,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return;
   }
 
-  const { newSeedCount, error } = await createUserJungle(url, session.user.id);
+  const result = await createUserJungle(url, session.user.id);
 
-  if (error === 422) res.status(422).json({ error: "You don't have enough seeds!" });
-  else if (error === 500) res.status(500).json({ error: 'Internal server error' });
-  else res.status(201).json({ newSeedCount });
+  if (result.error) {
+    if (result.error === 422) res.status(422).json({ error: "You don't have enough seeds!" });
+    else res.status(500).json({ error: 'Internal server error' });
+  }
+
+  else res.status(201).json({ newSeedCount: result.newSeedCount });
 }
