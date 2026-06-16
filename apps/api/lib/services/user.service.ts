@@ -10,13 +10,15 @@ export const getPopupInfo = async (userId: string) => {
         WHERE s.user_id = ${userId};
     `;
     
-    const [jungles] = await sql`
+    const jungles: [{ url: string }] = await sql`
         SELECT url
         FROM jungles
         WHERE owner_user_id = ${userId};
     `;
+
+    const jungleUrls = jungles.map((j) => j.url);
     
-    return { stash, jungles };
+    return { stash, jungleUrls };
 }
 
 export const updateUser = async (updateUser: User) => {
