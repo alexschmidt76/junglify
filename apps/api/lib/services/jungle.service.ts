@@ -2,14 +2,34 @@ import sql from '../db/sql.js';
 
 import type JungleSchema from '../typings/jungleSchemea.d.js';
 
-export const createJungle = async (url: string, planted_by_user_id: string | null) => {
-    const [jungle] = await sql`
-        INSERT INTO jungles (planted_by_user_id, url, jungle_type)
-        VALUES (${planted_by_user_id}, ${url}, ${planted_by_user_id ? 'owned' : 'wild'})
-        RETURNING *
-    `;
+export const createUserJungle = async (url: string, userId: string | null) => {
+    try {
+        const newSeedCount = await sql.begin((async (sql) => {
+            const [user] = await sql`
+                UPDATE "user"
+                SET seed_count = seed_count - 1
+                WHERE id = ${userId} AND seed_count > 0
+                RETURNING seed_count;
+            `;
 
-    return jungle;
+            if (!user) return { error: 422 }
+
+            const { count } = await sql`
+                INSERT INTO jungles (owner_user_id, planted_by_user_id, url, jungle_type)
+                SELECT ${userId}, ${userId}, ${url}, 'owned';
+            `;
+
+            if (count === 0) return { error: 500 };
+
+            return user.seed_count;
+        }));
+
+        return { newSeedCount };
+    } catch (error) {
+        console.log(error);
+        return { error: 500 };
+    }
+    
 };
 
 export const getJungleById = async (id: string) => {

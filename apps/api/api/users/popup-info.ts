@@ -1,5 +1,5 @@
 import auth from "@/lib/auth/auth.js";
-import { getPopupInfo } from "@/lib/services/user.services.js";
+import { getPopupInfo } from "@/lib/services/user.service.js";
 import { applyCors } from "@/lib/utils/cors.js";
 import toHeaders from "@/lib/utils/toHeaders.js";
 import { VercelRequest, VercelResponse } from "@vercel/node";
@@ -19,12 +19,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         return;
     }
 
-    const data = await getPopupInfo(session.user.id);
+    const { stash, jungleUrls, error } = await getPopupInfo(session.user.id);
 
-    if (!stash) {
-        res.status(404).json({ error: 'No stash found' });
-        return;
-    }
+    if (error) res.status(500).json({ error: "Internal server error" });
 
-    res.json(data);
+    res.status(200).json({ stash, jungleUrls });
 }

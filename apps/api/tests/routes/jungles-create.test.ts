@@ -10,7 +10,7 @@ vi.mock('@/lib/services/jungle.service.js', () => ({
 }));
 
 import { createJungle } from '@/lib/services/jungle.service.js';
-import handler from '@/api/jungles/create/index.js';
+import handler from '@/api/jungles/create/user.js';
 
 const mockJungle = {
   id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
