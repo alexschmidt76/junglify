@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import cleanUrl from "@/utils/urlCleaner";
 
 import type User from '@repo/utils/types/user';
+import FormError from "@repo/react-components/FormError";
 
 type StashInfo = {
     url: string,
@@ -11,8 +13,11 @@ export default function JunglifyPopup({ user }: { user: User }) {
     const [url, setUrl] = useState<string | null>(null);
     const [stash, setStash] = useState<null | StashInfo>(null);
     const [jungleUrls, setJungleUrls] = useState<string[]>([]);
-    const [atOwnedJungle, setAtOwnedJungle] = useState(false);
+    const [atOwnJungle, setAtOwnJungle] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [planting, setPlanting] = useState(false);
+    const [seedCount, setSeedCount] = useState(user.seed_count || 0);
+    const [plantError, setPlantError] = useState<null | string>(null);
 
     const apiUrl = import.meta.env.WXT_API_URL;
     if (!apiUrl) throw new Error('WXT_API_URL env var must not be empty');
@@ -22,10 +27,12 @@ export default function JunglifyPopup({ user }: { user: User }) {
 
         if (!url) return;
 
+        setPlanting(true);
+
         try {
             const { bearerToken } = await browser.storage.local.get('bearerToken');
 
-            await fetch(apiUrl + '/jungles/create', {
+            const response = await fetch(apiUrl + '/jungles/create', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${bearerToken ?? ''}`
@@ -35,17 +42,24 @@ export default function JunglifyPopup({ user }: { user: User }) {
                 })
             });
 
-            return;
-        } catch (err) {
-            console.log(err)
+            if (response.status === 201) {
+                setJungleUrls([url, ...jungleUrls]);
+                setSeedCount(seedCount - 1);
+                setAtOwnJungle(true);
+            } else {
+                const data: { error: string } = await response.json();
+                setPlantError(data.error);
+            }
+        } catch (error) {
+            console.log(error)
         } finally {
-            user.seed_count = user.seed_count - 1;
+            setPlanting(false);
         }
     }
     
     useEffect(() => {
-        browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-            setUrl(tab?.url ?? null);
+        if (!url) browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
+            if (tab?.url) setUrl(cleanUrl(tab.url));
         });
 
         async function fetchStash() {
@@ -75,7 +89,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
                                 parsedUrls.unshift(parsedUrls.splice(i, 1)[0]!);
                             }
                             setJungleUrls(parsedUrls);
-                            setAtOwnedJungle(true);
+                            setAtOwnJungle(true);
                             i = parsedUrls.length;
                         }
                     }
@@ -86,7 +100,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
         }
 
         void fetchStash();
-    });
+    }, []);
 
     if (loading) return <div>Loading...</div>;
 
@@ -111,14 +125,17 @@ export default function JunglifyPopup({ user }: { user: User }) {
             <div className="flex flex-col text-2xl">
                 <ul>
                     {
-                        jungleUrls.map((jungleUrl, i) => <li>{jungleUrl} { atOwnedJungle && i === 0 ? "<-- you're here right now!" : null }</li>)
+                        jungleUrls.map((jungleUrl, i) => <li>{jungleUrl} { atOwnJungle && i === 0 ? "<-- you're here right now!" : null }</li>)
                     }
                 </ul>
-                <p>Seeds: {user.seed_count}</p>
+                <p>Seeds: {seedCount}</p>
+                {plantError && <FormError message={plantError} />}
                 { 
-                    user.seed_count > 0 
-                    ? <button className="border border-black" onClick={(e) => plantJungle(e)}>Plant a jungle here!</button>
-                    : null
+                    planting
+                    ? <button className="border border-black">Planting a jungle...</button>
+                    : seedCount > 0 
+                        ? <button className="border border-black" onClick={(e) => plantJungle(e)}>Plant a jungle here!</button>
+                        : null
                 }
             </div>
         </div>
