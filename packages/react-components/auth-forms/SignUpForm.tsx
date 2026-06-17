@@ -5,7 +5,13 @@ import type { JungleAuthClient } from '@repo/auth/auth-client';
 import FormError from '../FormError';
 
 export default function SignUpForm(
-    { authClient, callbackFn }: { authClient: JungleAuthClient, callbackFn: (...params: string[]) => void | Promise<void> }
+    { authClient, callbackFn, onNavigate }: {
+        authClient: JungleAuthClient,
+        callbackFn: (...params: string[]) => void | Promise<void>,
+        // when provided (e.g. the extension popup's router), intercept in-app
+        // links instead of letting the anchor do a full-page navigation
+        onNavigate?: (path: string) => void,
+    }
 ) {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -54,7 +60,7 @@ export default function SignUpForm(
         <div className='flex mx-auto p-8 justify-center bg-black text-xl text-green-600 rounded-2xl'>
             <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
                 <h1 className='text-green-500 text-2xl font-bold mx-auto'>Sign Up for Junglify</h1>
-                <p className='text-white/50 text-lg'>Already have an account? <a href='/log-in' className='text-green-800 hover:font-bold'>Log In</a> here.</p>
+                <p className='text-white/50 text-lg'>Already have an account? <a href='/log-in' onClick={onNavigate ? (e) => { e.preventDefault(); onNavigate('/log-in'); } : undefined} className='text-green-800 hover:font-bold'>Log In</a> here.</p>
                 <div className='flex flex-col mx-auto [&_input]:bg-white/80 [&_input]:rounded-sm [&_input]:text-black [&_input]:px-0.5'>
                     <label>Email</label>
                     <input value={email} onChange={e => setEmail(e.target.value)} type="email" required />

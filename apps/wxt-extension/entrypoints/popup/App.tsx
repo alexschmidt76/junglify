@@ -12,18 +12,22 @@ function AppRoutes({ store }: { store: ReturnType<typeof useStore> }) {
   
   const callback = async (...params: string[]) => {
     const token = params[1] || '';
-    browser.runtime.sendMessage({
+    // wait for the background to store the token + popup info before we route,
+    // then refresh the session store so '/' renders the popup instead of
+    // bouncing back to /log-in (username sign-in doesn't auto-refresh it)
+    await browser.runtime.sendMessage({
       type: 'LOG_IN',
-      token: token,
+      token,
     });
+    await authClient.useSession.get().refetch();
     navigate('/');
   }
 
   return (
     <Routes>
       <Route path='/' element={store.data ? <JunglifyPopup user={store.data.user} /> : <Navigate to="/log-in" />} />
-      <Route path='/log-in' element={<LogInForm authClient={authClient} callbackFn={callback} />} />
-      <Route path='/sign-up' element={<SignUpForm authClient={authClient} callbackFn={callback} />} />
+      <Route path='/log-in' element={<LogInForm authClient={authClient} callbackFn={callback} onNavigate={(path) => navigate(path)} />} />
+      <Route path='/sign-up' element={<SignUpForm authClient={authClient} callbackFn={callback} onNavigate={(path) => navigate(path)} />} />
     </Routes>
   );
 }

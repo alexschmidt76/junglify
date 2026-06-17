@@ -1,52 +1,54 @@
 import urlCleaner from '../utils/urlCleaner.ts';
 import cacheUpdate from '@/utils/cacheUpdate.ts';
 
-import { UrlCache } from '@/typings/cache.js';
+import type { UrlCache, UrlCacheItem } from '@/typings/cache.js';
 
-const apiUrl = process.env.WXT_API_URL || '';
+const apiUrl = import.meta.env.WXT_API_URL;
+if (!apiUrl) throw new Error('WXT_API_URL env var must not be empty');
+
+/** How long a cached jungle-status lookup stays fresh. */
+const CACHE_TTL_MS = 1000 * 60 * 60; // 1 hour
 
 export default defineContentScript({
   matches: ['<all_urls>'],
-  runAt: 'document_idle',
+  runAt: 'document_start',
   async main() {
     // runs every time a new url is hit
     const onUrlChange = async (url: string) => {
       console.log("URL changed to:", url);
 
       const cleanUrl = urlCleaner(url);
-      let urlInfo: {
-        isJungle: boolean,
-        jungle: {
-          growthStage: number,
-          hasStash: boolean
-        } | null,
-      }; 
 
-      const urlCache: UrlCache = await browser.storage.local.get('urlCache');
+      const { urlCache = {} }: { urlCache?: UrlCache } =
+        await browser.storage.local.get('urlCache');
       const cacheVal = urlCache[cleanUrl];
 
-      if (cacheVal && cacheVal.expires && cacheVal.expires > Date.now()) {
+      let urlInfo: UrlCacheItem['data'];
+
+      if (cacheVal?.expires && cacheVal.expires > Date.now()) {
         urlInfo = cacheVal.data;
       } else {
-        if (cacheVal && cacheVal.expires && cacheVal.expires <= Date.now()) {
-          delete urlCache[cleanUrl];
+        try {
+          const res = await fetch(
+            apiUrl + '/jungles?url=' + encodeURIComponent(cleanUrl),
+            { method: 'GET' },
+          );
+
+          const { growthStage, hasStash } = await res.json();
+
+          urlInfo = {
+            isJungle: res.ok,
+            jungle: res.ok ? { growthStage, hasStash } : null,
+          };
+
+          await cacheUpdate('urlCache', cleanUrl, {
+            data: urlInfo,
+            expires: Date.now() + CACHE_TTL_MS,
+          });
+        } catch (error) {
+          console.warn('[Junglify] jungle lookup failed:', error);
+          return;
         }
-
-        const res = await fetch(apiUrl + '/jungles?url=' + cleanUrl, {
-          method: 'GET'
-        });
-
-        const { growthStage, hasStash } = await res.json();
-
-        urlInfo = {
-          isJungle: res.ok,
-          jungle: 
-            res.ok 
-            ? { growthStage: growthStage, hasStash: hasStash } 
-            : null,
-        }
-
-        await cacheUpdate('urlCache', urlInfo);
       }
 
       console.log('this url', urlInfo.isJungle ? 'is' : 'is not', 'a jungle');
