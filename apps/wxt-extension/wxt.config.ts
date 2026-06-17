@@ -9,5 +9,12 @@ export default defineConfig({
   }),
   manifest: {
     permissions: ['storage'],
+    content_scripts: [
+      {
+        matches: ["<all_urls>"],
+        js: ["content-scripts/index.ts"],
+        run_at: "document_start",
+      }
+    ]
   },
 });

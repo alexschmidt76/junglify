@@ -6,7 +6,7 @@ import authClient from './auth';
  * Better Auth session store (authClient.useSession) updates and the popup
  * reflects the logged-out state.
  */
-export const protectedFetch = async (
+const protectedFetch = async (
    input: string,
    init: RequestInit = {},
 ): Promise<Response> => {
@@ -26,3 +26,5 @@ export const protectedFetch = async (
 
    return res;
 };
+
+export default protectedFetch;

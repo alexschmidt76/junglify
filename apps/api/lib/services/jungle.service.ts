@@ -43,8 +43,12 @@ export const getJungleById = async (id: string) => {
 
 export const getJungleByUrl = async (url: string) => {
     const [jungle] = await sql`
-        SELECT * FROM jungles
-        WHERE url = ${url}
+        SELECT 
+            j.growthStage,
+            (s.jungle_url IS NOT NULL) AS has_stash 
+        FROM jungles j
+        LEFT JOIN stashes s ON s.jungle_url = ${url}
+        WHERE j.url = ${url};
     `;
 
     return jungle;

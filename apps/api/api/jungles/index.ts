@@ -16,12 +16,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
                 return;
             }
 
-            res.status(200).json({ jungle });
+            res.status(200).json({ 
+                growthStage: jungle.growth_stage,
+                hasStash: jungle.has_stash,
+            });
         } else {
             res.status(200).json({ 
                 message: "this is the junglify api /jungles endpoint, use /jungles/[id] or /jungles?url=[url] to get a specific jungle",
                 monkey_noises: ['ooh ooh', 'aah aah', 'eek eek']
             });
         }
+    } else {
+        res.status(405).json({ error: 'Method Not Allowed' });
+        return;
     }
 }
