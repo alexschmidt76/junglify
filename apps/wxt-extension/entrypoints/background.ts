@@ -87,6 +87,7 @@ export default defineBackground(() => {
             }
         ) => {
             await browser.storage.local.set({ [cacheName]: data });
+            return { ok: true };
         }
 
         browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -97,11 +98,53 @@ export default defineBackground(() => {
                         console.error("[Junglify handler error:", err);
                         sendResponse({ ok: false, error: err.message });
                     });
+
                 return true;
             }
 
             return false;
         });
-        
+
+        /* listen for user auth changes */
+        const handleLogIn = async (token: string) => {
+            await browser.storage.local.set({ bearerToken: token });
+            return { ok: true };
+        }
+
+        browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+            if (message.type === 'LOG_IN') {
+                handleLogIn(message.token)
+                    .then(sendResponse)
+                    .catch((err) => {
+                        console.error("[Junglify] handler error:", err);
+                        sendResponse({ ok: false, error: err.message });
+                    });
+
+                return true;
+            }
+
+            return false;
+        });
+
+        const handleLogOut = async () => {
+            await authClient.signOut();
+            await browser.storage.local.remove('bearerToken');
+            return { ok: true }
+        }
+
+        browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+            if (message.type === 'LOG_OUT') {
+                handleLogOut()
+                    .then(sendResponse)
+                    .catch((err) => {
+                        console.error("[Junglify] handler error:", err);
+                        sendResponse({ ok: false, error: err.message });
+                    });
+
+                return true;
+            }
+
+            return false;
+        })
     })();
 });

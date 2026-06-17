@@ -12,7 +12,10 @@ function AppRoutes({ store }: { store: ReturnType<typeof useStore> }) {
   
   const callback = async (...params: string[]) => {
     const token = params[1] || '';
-    await browser.storage.local.set({ bearerToken: token });
+    browser.runtime.sendMessage({
+      type: 'LOG_IN',
+      token: token,
+    });
     navigate('/');
   }
 
