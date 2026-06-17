@@ -6,7 +6,13 @@ import type { ErrorContext, SuccessContext } from 'better-auth/react';
 import FormError from '../FormError';
 
 export default function LogInForm(
-    { authClient, redirectFn }: { authClient: JungleAuthClient, redirectFn?: (...params: string[]) => void | Promise<void> }
+    { authClient, callbackFn, onNavigate }: {
+        authClient: JungleAuthClient,
+        callbackFn: (...params: string[]) => void | Promise<void>,
+        // when provided (e.g. the extension popup's router), intercept in-app
+        // links instead of letting the anchor do a full-page navigation
+        onNavigate?: (path: string) => void,
+    }
 ) {
     const [name, setName] = useState("");
     const [password, setPassword] = useState(""); 
@@ -20,15 +26,14 @@ export default function LogInForm(
             onRequest() {
                 setLoading(true);
             },
-            onSuccess(ctx: SuccessContext) {
-                if (redirectFn) {
-                    const username = ctx.data?.user?.username;
-                    redirectFn(username);
-                }
+            async onSuccess(ctx: SuccessContext) {
+                const username = ctx.data?.user?.username;
+                const token = await ctx.response.headers.get('set-auth-token') || '';
+                await callbackFn(username, token);
             },
             onError(ctx: ErrorContext) {
                 setLoading(false);
-                setError(ctx.error?.message)
+                setError(ctx.error?.message);
             }
         }
         
@@ -36,13 +41,13 @@ export default function LogInForm(
             await authClient.signIn.email({ 
                 email: name.trim(), 
                 password: password.trim(),
-                fetchOptions: fetchOptions
+                fetchOptions: fetchOptions,
             });
         } else {
             await authClient.signIn.username({ 
                 username: name.trim(), 
                 password: password.trim(), 
-                fetchOptions
+                fetchOptions: fetchOptions,
             });
         }
     }
@@ -53,7 +58,11 @@ export default function LogInForm(
                 <h1 className='text-green-500 text-2xl font-bold mx-auto'>Log In to Junglify</h1>
                 <p className='text-white/50 text-lg mx-auto'>
                     {'New to Junglify? '}
-                    <a href='/sign-up' className='text-green-800 hover:font-bold'>
+                    <a
+                        href='/sign-up'
+                        onClick={onNavigate ? (e) => { e.preventDefault(); onNavigate('/sign-up'); } : undefined}
+                        className='text-green-800 hover:font-bold'
+                    >
                         Sign Up Here
                     </a>
                 </p>

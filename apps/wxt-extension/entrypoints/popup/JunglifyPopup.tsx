@@ -9,6 +9,13 @@ type StashInfo = {
     banana_count: number
 }
 
+type PlantResponse = {
+    ok: boolean,
+    status?: number,
+    newSeedCount?: number,
+    error?: string,
+}
+
 export default function JunglifyPopup({ user }: { user: User }) {
     const [url, setUrl] = useState<string | null>(null);
     const [stash, setStash] = useState<null | StashInfo>(null);
@@ -21,9 +28,6 @@ export default function JunglifyPopup({ user }: { user: User }) {
     const [popupError, setPopupError] = useState<null | string>(null);
     const [refreshToggle, setRefreshToggle] = useState(false);
 
-    const apiUrl = import.meta.env.WXT_API_URL;
-    if (!apiUrl) throw new Error('WXT_API_URL env var must not be empty');
-
     const plantJungle = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
 
@@ -33,90 +37,66 @@ export default function JunglifyPopup({ user }: { user: User }) {
         }
 
         setPlantError(null);
-
         setPlanting(true);
 
         try {
-            const { bearerToken } = await browser.storage.local.get('bearerToken');
+            const res = await browser.runtime.sendMessage({
+                type: 'PLANT_JUNGLE',
+                url,
+            }) as PlantResponse;
 
-            const response = await fetch(apiUrl + '/jungles/create/user', {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${bearerToken ?? ''}`
-                },
-                body: JSON.stringify({
-                    url: url
-                })
-            });
-
-            const { error, newSeedCount }: { error?: string, newSeedCount?: number } = await response.json();
-
-            if (!error) {
+            if (res?.error) {
+                setPlantError(res.error);
+                if (res.status === 422) setSeedCount(0);
+            } else if (res?.ok) {
                 setJungleUrls([url, ...jungleUrls]);
-                if (newSeedCount) setSeedCount(newSeedCount);
+                if (res.newSeedCount !== undefined) setSeedCount(res.newSeedCount);
                 setAtOwnJungle(true);
             } else {
-                setPlantError(error);
-                if (response.status === 422) setSeedCount(0);
+                setPlantError("Something went wrong planting your jungle.");
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            setPlantError("Something went wrong planting your jungle.");
         } finally {
             setPlanting(false);
         }
     }
-    
+
     useEffect(() => {
         if (!url) browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
             if (tab?.url) setUrl(cleanUrl(tab.url));
         });
 
-        async function fetchPopupInfo() {
+        const getPopupInfo = async () => {
             setLoading(true);
 
             try {
-                const { bearerToken } = await browser.storage.local.get('bearerToken');
+                const { stash, jungleUrls = [] } = await browser.storage.local.get([
+                    'stash',
+                    'jungleUrls',
+                ]) as { stash?: StashInfo, jungleUrls?: string[] };
 
-                const res = await fetch(apiUrl + '/users/popup-info', {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${bearerToken ?? ''}`
-                    }
-                });
+                setStash(stash ?? null);
 
-                const data: { stash: StashInfo, jungleUrls: string[], error: string } = await res.json();
-                
-                if (data.error) {
-                    setPopupError(data.error);
+                // surface the jungle for the current tab at the top of the list
+                if (url && jungleUrls.includes(url)) {
+                    setJungleUrls([url, ...jungleUrls.filter((u) => u !== url)]);
+                    setAtOwnJungle(true);
                 } else {
-                    setStash(data.stash);
-    
-                    const urls = data.jungleUrls;
-    
-                    if (url !== null) {
-                        for (let i = 0; i < urls.length; i++) {
-                            //const u = urls[i];
-                            if (urls[i] === url) {
-                                if (i > 0) {
-                                    urls.unshift(urls.splice(i, 1)[0]!);
-                                }
-                                setJungleUrls(urls);
-                                setAtOwnJungle(true);
-                                i = urls.length;
-                            }
-                        }
-                    }
+                    setJungleUrls(jungleUrls);
+                    setAtOwnJungle(false);
                 }
             } catch (error) {
-                console.log(error)
-                setPopupError("Internal server error")
+                console.log(error);
+                setPopupError("Couldn't load your jungle info.");
             } finally {
                 setLoading(false);
             }
         }
 
-        void fetchPopupInfo();
-    }, [apiUrl, url, refreshToggle]);
+        void getPopupInfo();
+    }, [url, refreshToggle]);
 
     if (loading) return <div>Loading...</div>;
 
@@ -135,7 +115,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
                         <>
                             <p>Stash URL: {stash.url}</p>
                             <p>Bananas: {stash.banana_count}</p>
-                        </>    
+                        </>
                     ) : (
                         <>
                             <p>You don't have a stash yet!</p>
@@ -148,15 +128,15 @@ export default function JunglifyPopup({ user }: { user: User }) {
             <div className="flex flex-col text-2xl">
                 <ul>
                     {
-                        jungleUrls.map((jungleUrl, i) => <li>{jungleUrl} { atOwnJungle && i === 0 ? "<-- you're here right now!" : null }</li>)
+                        jungleUrls.map((jungleUrl, i) => <li key={jungleUrl}>{jungleUrl} { atOwnJungle && i === 0 ? "<-- you're here right now!" : null }</li>)
                     }
                 </ul>
                 <p>Seeds: {seedCount}</p>
                 {plantError && <FormError message={plantError} />}
-                { 
+                {
                     planting
                     ? <button className="border border-black">Planting a jungle...</button>
-                    : seedCount > 0 
+                    : seedCount > 0
                         ? <button className="border border-black" onClick={(e) => plantJungle(e)}>Plant a jungle here!</button>
                         : null
                 }

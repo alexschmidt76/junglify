@@ -2,10 +2,10 @@
  * Turns a raw URL into a stable "content key" that Junglify uses to decide
  * whether two URLs point at meaningfully different pages.
  *
- * Junglify only cares about the parts of a URL that change *what's on the page*
- * — the host, the path, and content-bearing query params such as a public
+ * Junglify only cares about the parts of a URL that change what's on the page:
+ * the host, the path, and content-bearing query params (such as a public
  * profile id (`?user=42`), a search query (`?q=...`) or a page number
- * (`?page=2`). It deliberately throws away "how you got here" noise: campaign /
+ * (`?page=2`)). It deliberately throws away "how you got here" noise: campaign /
  * tracking params, share & referrer tags, scroll anchors and video timestamps.
  *
  * Two requests that show the same content should clean to the same string;
@@ -116,7 +116,7 @@ function isJunkParam(name: string, hostname: string): boolean {
  * Returns the cleaned URL string. If the input can't be parsed as a URL it is
  * returned trimmed and unchanged, so callers always get a usable key.
  */
-export function cleanUrl(rawUrl: string): string {
+export function urlCleaner(rawUrl: string): string {
   let url: URL;
   try {
     url = new URL(rawUrl);
@@ -124,7 +124,7 @@ export function cleanUrl(rawUrl: string): string {
     return rawUrl.trim();
   }
 
-  // Collapse http/https — the same page over either scheme is the same content.
+  // Collapse http/https, the same page over either scheme is the same content.
   const scheme = url.protocol === 'http:' ? 'https:' : url.protocol;
 
   // Lower-case the host and drop a leading `www.` (cosmetic, not content).
@@ -147,9 +147,9 @@ export function cleanUrl(rawUrl: string): string {
 
   const query = cleaned.toString();
 
-  // The fragment (`#...`) is intentionally dropped — it's almost always a
+  // The fragment (`#...`) is intentionally dropped; it's almost always a
   // scroll anchor or timestamp rather than a distinct page.
   return `${scheme}//${host}${path}${query ? `?${query}` : ''}`;
 }
 
-export default cleanUrl;
+export default urlCleaner;
