@@ -51,6 +51,8 @@ export default defineContentScript({
         }
       }
 
+      // TO DO: message background to write urlInfo to local storage
+
       console.log('this url', urlInfo.isJungle ? 'is' : 'is not', 'a jungle');
     }
 

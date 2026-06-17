@@ -19,7 +19,7 @@ export default async function handlers(req: VercelRequest, res: VercelResponse):
         return;
     }
 
-    const { url } = req.body as { url?: string, userId?: string };
+    const { url } = req.body as { url?: string };
     
     if (!url) {
         res.status(400).json({ error: 'A URL is required to hide a stash' });

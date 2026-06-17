@@ -86,6 +86,13 @@ export default defineBackground(() => {
             }
         })
 
+        const handlerError = (
+            err: { message: string }, 
+            sendResponse: (res: { ok: boolean, error: string}) => void
+        ) => {
+            console.error("[Junglify] handler error:", err);
+            sendResponse({ ok: false, error: err.message });
+        };
 
         /* listen for browser storage updaets */
         const handleCacheUpdate = async (
@@ -106,16 +113,15 @@ export default defineBackground(() => {
             if (message.type === 'UPDATE_CACHE') {
                 handleCacheUpdate(message.payload)
                     .then(sendResponse)
-                    .catch((err) => {
-                        console.error("[Junglify handler error:", err);
-                        sendResponse({ ok: false, error: err.message });
-                    });
+                    .catch((err) => handlerError(err, sendResponse));
 
                 return true;
             }
 
             return false;
         });
+
+        // TO DO: handle current urlInfo changing
 
         /* listen for user auth changes */
         const handleLogIn = async (token: string) => {
@@ -130,16 +136,31 @@ export default defineBackground(() => {
             if (message.type === 'LOG_IN') {
                 handleLogIn(message.token)
                     .then(sendResponse)
-                    .catch((err) => {
-                        console.error("[Junglify] handler error:", err);
-                        sendResponse({ ok: false, error: err.message });
-                    });
+                    .catch((err) => handlerError(err, sendResponse));
 
                 return true;
             }
 
             return false;
         });
+
+        const handleLogOut = async () => {
+            await authClient.signOut();
+            await browser.storage.local.remove('bearerToken');
+            return { ok: true }
+        }
+        
+        browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+            if (message.type === 'LOG_OUT') {
+                handleLogOut()
+                .then(sendResponse)
+                .catch((err) => handlerError(err, sendResponse));
+                
+                return true;
+            }
+            
+            return false;
+        })
 
         /* plant a jungle at the given url on the user's behalf */
         const handlePlantJungle = async (url: string) => {
@@ -148,11 +169,11 @@ export default defineBackground(() => {
             // it to an object and the handler then rejects the request)
             const res = await protectedFetch(apiUrl + '/jungles/create/user', {
                 method: 'POST',
+                headers: { type: 'application/json' },
                 body: JSON.stringify({ url }),
             });
 
-            const { error, newSeedCount }: { error?: string, newSeedCount?: number } =
-                await res.json();
+            const { error, newSeedCount } = await res.json() as { error?: string, newSeedCount?: number };
 
             // keep the cached jungle list in sync so the popup reflects the new jungle
             if (!error) {
@@ -170,10 +191,7 @@ export default defineBackground(() => {
             if (message.type === 'PLANT_JUNGLE') {
                 handlePlantJungle(message.url)
                     .then(sendResponse)
-                    .catch((err) => {
-                        console.error("[Junglify] handler error:", err);
-                        sendResponse({ ok: false, error: err.message });
-                    });
+                    .catch((err) => handlerError(err, sendResponse));
 
                 return true;
             }
@@ -181,20 +199,26 @@ export default defineBackground(() => {
             return false;
         });
 
-        const handleLogOut = async () => {
-            await authClient.signOut();
-            await browser.storage.local.remove('bearerToken');
-            return { ok: true }
+        /* hide a user's stash at a given jungle url */
+        const handleHideStash = async (url: string) => {
+            const res = await protectedFetch(apiUrl +'/stashes/create', {
+                method: 'POST',
+                headers: { type: 'application/json' },
+                body: JSON.stringify({ url }),
+            });
+
+            const { error } = await res.json() as { error?: string };
+
+            await browser.storage.local.set({ stash: { url, banana_count: 0 } });
+
+            return { ok: res.ok, status: res.status, error };
         }
 
         browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-            if (message.type === 'LOG_OUT') {
-                handleLogOut()
+            if (message.type === 'HIDE_STASH') {
+                handleHideStash(message.url)
                     .then(sendResponse)
-                    .catch((err) => {
-                        console.error("[Junglify] handler error:", err);
-                        sendResponse({ ok: false, error: err.message });
-                    });
+                    .catch((err) => handlerError(err, sendResponse));
 
                 return true;
             }

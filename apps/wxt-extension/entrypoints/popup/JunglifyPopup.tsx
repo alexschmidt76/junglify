@@ -16,6 +16,12 @@ type PlantResponse = {
     error?: string,
 }
 
+type HideResponse = {
+    ok: boolean,
+    status?: number,
+    error?: string
+}
+
 export default function JunglifyPopup({ user }: { user: User }) {
     const [url, setUrl] = useState<string | null>(null);
     const [stash, setStash] = useState<null | StashInfo>(null);
@@ -27,9 +33,13 @@ export default function JunglifyPopup({ user }: { user: User }) {
     const [plantError, setPlantError] = useState<null | string>(null);
     const [popupError, setPopupError] = useState<null | string>(null);
     const [refreshToggle, setRefreshToggle] = useState(false);
+    const [hiding, setHiding] = useState(false);
+    const [hideError, setHideError] = useState<null | string>(null);
 
     const plantJungle = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
+
+        if (planting) return;
 
         if (!url) {
             setPlantError("There's something wrong with this URL, try refreshing.");
@@ -45,10 +55,10 @@ export default function JunglifyPopup({ user }: { user: User }) {
                 url,
             }) as PlantResponse;
 
-            if (res?.error) {
+            if (res.error) {
                 setPlantError(res.error);
                 if (res.status === 422) setSeedCount(0);
-            } else if (res?.ok) {
+            } else if (res.ok) {
                 setJungleUrls([url, ...jungleUrls]);
                 if (res.newSeedCount !== undefined) setSeedCount(res.newSeedCount);
                 setAtOwnJungle(true);
@@ -62,6 +72,36 @@ export default function JunglifyPopup({ user }: { user: User }) {
             setPlanting(false);
         }
     }
+
+    const hideStash = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+
+        if (hiding) return;
+
+        if (!url) {
+            setHideError("There's something wrong with this URL, try refreshing.");
+            return;
+        }
+
+        setHideError(null);
+        setHiding(true);
+
+        try {
+            const res = await browser.runtime.sendMessage({
+                type: 'HIDE_STASH',
+                url,
+            }) as HideResponse;
+            
+            if (res.error) setHideError(res.error);
+            else if (res.ok) setStash({ url: url, banana_count: 0 });
+            else setHideError("Something went wrong hiding your stash.");
+        } catch (error) {
+            console.log(error);
+            setHideError("Something went wrong hiding your stash.");
+        } finally {
+            setHiding(false);
+        }
+    } 
 
     useEffect(() => {
         if (!url) browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
@@ -110,6 +150,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
     return (
         <div className="flex w-min">
             <div className="flex flex-col text-2xl">
+                <MyStash stash={stash} />
                 {
                     stash ? (
                         <>
@@ -120,6 +161,14 @@ export default function JunglifyPopup({ user }: { user: User }) {
                         <>
                             <p>You don't have a stash yet!</p>
                             <p>Go to one of your jungles and hide your stash to start collecting bananas.</p>
+                            { hideError && <FormError message={hideError} />
+                             }
+                            { 
+                                atOwnJungle 
+                                && hiding
+                                    ? <button>Hiding your stash...</button>
+                                    : <button onClick={(e) => hideStash(e)}>Hide your stash here!</button> 
+                            }
                         </>
                     )
                 }
@@ -137,8 +186,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
                     planting
                     ? <button className="border border-black">Planting a jungle...</button>
                     : seedCount > 0
-                        ? <button className="border border-black" onClick={(e) => plantJungle(e)}>Plant a jungle here!</button>
-                        : null
+                        && <button className="border border-black" onClick={(e) => plantJungle(e)}>Plant a jungle here!</button>
                 }
             </div>
         </div>

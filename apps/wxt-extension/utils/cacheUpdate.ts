@@ -5,6 +5,7 @@
  * the cache) to avoid clobbering concurrent updates from other tabs; this just
  * forwards the entry over a message.
  */
+// TO DO: limit cache sizes (not sure how exactly to do this yet)
 const cacheUpdate = async (cacheName: string, key: string, value: object) => {
     try {
         const res = await browser.runtime.sendMessage({
