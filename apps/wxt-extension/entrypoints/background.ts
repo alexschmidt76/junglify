@@ -106,14 +106,20 @@ export default defineBackground(() => {
         });
 
         /* listen for user auth changes */
-        const handleLogIn = async (token: string) => {
-            await browser.storage.local.set({ bearerToken: token });
+        const handleLogIn = async () => {
+            const res = await protectedFetch(apiUrl + '/users/popup-info', {
+                method: 'GET'
+            });
+    
+            const {stash, jungleUrls} = await res.json();
+            await browser.storage.local.set({ stash, jungleUrls });
+
             return { ok: true };
         }
 
         browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
             if (message.type === 'LOG_IN') {
-                handleLogIn(message.token)
+                handleLogIn()
                     .then(sendResponse)
                     .catch((err) => {
                         console.error("[Junglify] handler error:", err);

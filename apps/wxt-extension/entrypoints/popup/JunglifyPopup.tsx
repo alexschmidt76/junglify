@@ -71,51 +71,14 @@ export default function JunglifyPopup({ user }: { user: User }) {
             if (tab?.url) setUrl(cleanUrl(tab.url));
         });
 
-        async function fetchPopupInfo() {
-            setLoading(true);
-
-            try {
-                const { bearerToken } = await browser.storage.local.get('bearerToken');
-
-                const res = await fetch(apiUrl + '/users/popup-info', {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${bearerToken ?? ''}`
-                    }
-                });
-
-                const data: { stash: StashInfo, jungleUrls: string[], error: string } = await res.json();
-                
-                if (data.error) {
-                    setPopupError(data.error);
-                } else {
-                    setStash(data.stash);
-    
-                    const urls = data.jungleUrls;
-    
-                    if (url !== null) {
-                        for (let i = 0; i < urls.length; i++) {
-                            //const u = urls[i];
-                            if (urls[i] === url) {
-                                if (i > 0) {
-                                    urls.unshift(urls.splice(i, 1)[0]!);
-                                }
-                                setJungleUrls(urls);
-                                setAtOwnJungle(true);
-                                i = urls.length;
-                            }
-                        }
-                    }
-                }
-            } catch (error) {
-                console.log(error)
-                setPopupError("Internal server error")
-            } finally {
-                setLoading(false);
-            }
+        const getPopupInfo = async () => {
+            const s: { stash: { url: string, banana_count: number } } = await browser.storage.local.get('stash');
+            const j: { jungleUrls: string[] } = await browser.storage.local.get('jungleUrls');
+            setStash(s.stash);
+            setJungleUrls(j.jungleUrls);
         }
 
-        void fetchPopupInfo();
+        void getPopupInfo();
     }, [apiUrl, url, refreshToggle]);
 
     if (loading) return <div>Loading...</div>;
