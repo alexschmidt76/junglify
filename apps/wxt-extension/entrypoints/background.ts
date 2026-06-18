@@ -1,5 +1,5 @@
 import authClient from "@/utils/auth";
-import protectedFetch from "@/utils/protectedFetch";
+import protectedFetch from "@/utils/background.protectedFetch";
 
 import type Cache from '@/typings/cache.js';
 
@@ -216,7 +216,6 @@ export default defineBackground(() => {
 
         browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
             if (message.type === 'HIDE_STASH') {
-                console.log(message)
                 handleHideStash(message.url)
                     .then(sendResponse)
                     .catch((err) => handlerError(err, sendResponse));
@@ -225,6 +224,25 @@ export default defineBackground(() => {
             }
 
             return false;
+        })
+
+        /* listen for banana increases */
+        const handleAddBananas = async (count) => {
+            const { stash }: { stash: { url: string, banana_count: number } } = 
+                await browser.storage.local.get('stash', '');
+            
+            if (stash) {
+                await browser.storage.local.get('')
+            } else {
+                console.error('no stash!');
+                return { ok: false };
+            }
+        }
+
+        browser.runtime.onMessage.addListener((message, _sendser, sendResponse) => {
+            if (message.type === 'ADD_BANANAS') {
+
+            }
         })
     })();
 });

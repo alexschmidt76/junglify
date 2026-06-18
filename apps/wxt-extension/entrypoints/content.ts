@@ -1,5 +1,6 @@
 import urlCleaner from '../utils/urlCleaner.ts';
-import cacheUpdate from '@/utils/cacheUpdate.ts';
+import cacheUpdate from '@/utils/content.cacheUpdate.ts';
+import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
 
 import type { UrlCache, UrlCacheItem } from '@/typings/cache.js';
 
@@ -12,13 +13,40 @@ const CACHE_TTL_MS = 1000 * 60 * 60; // 1 hour
 export default defineContentScript({
   matches: ['<all_urls>'],
   runAt: 'document_start',
-  async main() {
+  async main(ctx) {
+    // create shadow root container over browser window
+    const ui = await createShadowRootUi(ctx, {
+      name: 'banana-button',
+      position: 'overlay',
+      anchor: 'body',
+      onMount: (container) => {
+        const button = document.createElement('button');
+        button.id = 'banana-button';
+        button.textContent = 'Get a banana';
+        button.onclick = (e) => {
+          e.preventDefault();
+
+          browser.runtime.sendMessage({
+            type: 'ADD_BANANAS',
+            count: 1
+          }).catch(error => console.error(error));
+        }
+
+        container.appendChild(button);
+        return button;
+      },
+      onRemove: (button) => {
+        button?.remove();
+      }
+    });
+
     // runs every time a new url is hit
     const onUrlChange = async (url: string) => {
       console.log("URL changed to:", url);
 
       const cleanUrl = urlCleaner(url);
 
+      // get urlInfo from urlCache or fetch it from the api
       const { urlCache = {} }: { urlCache?: UrlCache } =
         await browser.storage.local.get('urlCache');
       const cacheVal = urlCache[cleanUrl];
@@ -45,14 +73,15 @@ export default defineContentScript({
             data: urlInfo,
             expires: Date.now() + CACHE_TTL_MS,
           });
+
+
         } catch (error) {
           console.warn('[Junglify] jungle lookup failed:', error);
           return;
         }
       }
 
-      console.log('this url', urlInfo.isJungle ? 'is' : 'is not', 'a jungle');
-      if (urlInfo.isJungle) console.log('this jungle is', urlInfo.jungle?.hasStash ? '' : 'not', 'a stash.');
+      if (urlInfo.isJungle) ui.mount();
     }
 
     // TRACKING SPA URL CHANGES
