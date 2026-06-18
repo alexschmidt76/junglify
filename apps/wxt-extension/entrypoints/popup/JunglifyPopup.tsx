@@ -150,7 +150,6 @@ export default function JunglifyPopup({ user }: { user: User }) {
     return (
         <div className="flex w-min">
             <div className="flex flex-col text-2xl">
-                <MyStash stash={stash} />
                 {
                     stash ? (
                         <>

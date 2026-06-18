@@ -112,16 +112,14 @@ export default defineBackground(() => {
         browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
             if (message.type === 'UPDATE_CACHE') {
                 handleCacheUpdate(message.payload)
-                    .then(sendResponse)
-                    .catch((err) => handlerError(err, sendResponse));
+                .then(sendResponse)
+                .catch((err) => handlerError(err, sendResponse));
 
                 return true;
             }
 
             return false;
         });
-
-        // TO DO: handle current urlInfo changing
 
         /* listen for user auth changes */
         const handleLogIn = async (token: string) => {
@@ -203,19 +201,22 @@ export default defineBackground(() => {
         const handleHideStash = async (url: string) => {
             const res = await protectedFetch(apiUrl +'/stashes/create', {
                 method: 'POST',
-                headers: { type: 'application/json' },
+                headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({ url }),
             });
 
             const { error } = await res.json() as { error?: string };
 
-            await browser.storage.local.set({ stash: { url, banana_count: 0 } });
+            if (res.ok) {
+                await browser.storage.local.set({ stash: { url, banana_count: 0 } });
+            }
 
             return { ok: res.ok, status: res.status, error };
         }
 
         browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
             if (message.type === 'HIDE_STASH') {
+                console.log(message)
                 handleHideStash(message.url)
                     .then(sendResponse)
                     .catch((err) => handlerError(err, sendResponse));

@@ -1,5 +1,5 @@
 import auth from "@/lib/auth/auth.js";
-import { getPopupInfo } from "@/lib/services/user.service.js";
+import { getPopupInfo } from "@/lib/services/user.services.js";
 import { applyCors } from "@/lib/utils/cors.js";
 import toHeaders from "@/lib/utils/toHeaders.js";
 import { VercelRequest, VercelResponse } from "@vercel/node";

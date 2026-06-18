@@ -2,10 +2,10 @@ import sql from "../db/sql.js";
 
 export const createStash = async (url: string, userId: string): Promise<boolean> => {
     const result: { count: number } = await sql`
-        INSERT INTO stashes (user_id, jungl_id)
+        INSERT INTO stashes (user_id, jungle_id)
         SELECT ${userId}, j.id
         FROM jungles j
-        WHERE j.url = ${url}
+        WHERE j.url = ${url} AND j.owner_user_id = ${userId};
     `;
 
     return result.count === 1;

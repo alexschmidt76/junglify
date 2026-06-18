@@ -6,7 +6,7 @@
     { "source": "/jungles/:path*", "destination": "/api/jungles/:path*" },
     { "source": "/auth/:path*", "destination": "/api/auth/:path*" },
     { "source": "/api/auth/(.*)", "destination": "/api/auth/catchall" },
-    { "source": "/stashes/my-stash", "destination": "/api/stashes/my-stash"},
+    { "source": "/stashes/:path*", "destination": "/api/stashes/:path*"},
     { "source": "/users/popup-info", "destination": "/api/users/popup-info"}
   ]
 }

@@ -51,9 +51,8 @@ export default defineContentScript({
         }
       }
 
-      // TO DO: message background to write urlInfo to local storage
-
       console.log('this url', urlInfo.isJungle ? 'is' : 'is not', 'a jungle');
+      if (urlInfo.isJungle) console.log('this jungle is', urlInfo.jungle?.hasStash ? '' : 'not', 'a stash.');
     }
 
     // TRACKING SPA URL CHANGES

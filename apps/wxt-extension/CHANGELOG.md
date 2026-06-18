@@ -2,7 +2,8 @@
 
 | VERSION | UPDATE INFO                                                           | Date (yyyy-mm-dd)  |
 |---------|-----------------------------------------------------------------------|--------------------|
-| 0.4.0   | caching url jungle history                                            | 2026-06-17         |
+| 0.4.0   | user can hide their stash at a jungle they own                        | 2026-06-17         |
+| 0.3.2   | caching url jungle history                                            | 2026-06-17         |
 | 0.3.1   | jungle planting feature improved for security and seed count accuracy | 2026-06-16         |
 | 0.3.0   | user can plant jungles                                                | 2026-06-13         |
 | 0.2.0   | user can log in and sign up for accounts via the popup                | 2026-06-13         |
