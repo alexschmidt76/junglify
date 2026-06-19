@@ -11,6 +11,17 @@ export const createStash = async (url: string, userId: string): Promise<boolean>
     return result.count === 1;
 }
 
+export const addBananaDelta = async (delta: number, userId: string): Promise<number> => {
+    const [row] = await sql`
+        UPDATE stashes
+        SET banana_count = GREATEST(0, banana_count + ${delta})
+        WHERE user_id = ${userId}
+        RETURNING banana_count;
+    `;
+
+    return row ? row.banana_count : -1;
+}
+
 export const getStashInfo = async (userId: string) => {
     const [stash] = await sql`
         SELECT j.url, s.banana_count

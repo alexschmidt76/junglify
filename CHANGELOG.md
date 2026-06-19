@@ -1,9 +1,10 @@
 # JUNGLIFY CHANGELOG
 
-| VERSION | UPDATE INFO                                                               | Date (yyyy-mm-dd) |
-|---------|---------------------------------------------------------------------------|-------------------|
-| 0.4.0   | a user can now plant jungles and hide their stash                         | 2026-06-17        |
-| 0.3.1   | junlge planting is now more robust                                        | 2026-06-16        |
-| 0.3.0   | user can now plant jungles                                                | 2026-06-14        |
-| 0.2.0   | user can register and log in from both web app and browser extension      | 2026-06-13        |
-| 0.1.0   | basic api, astro site, and wxt extension set up                           | 2026-06-06        |
+| VERSION | UPDATE INFO                                                                 | Date (yyyy-mm-dd) |
+|---------|-----------------------------------------------------------------------------|-------------------|
+| 0.4.1   | a user can now collect bananas by pressing a button that appears at jungles | 2026-06-19        |
+| 0.4.0   | a user can now plant jungles and hide their stash                           | 2026-06-17        |
+| 0.3.1   | junlge planting is now more robust                                          | 2026-06-16        |
+| 0.3.0   | user can now plant jungles                                                  | 2026-06-14        |
+| 0.2.0   | user can register and log in from both web app and browser extension        | 2026-06-13        |
+| 0.1.0   | basic api, astro site, and wxt extension set up                             | 2026-06-06        |
