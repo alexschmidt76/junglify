@@ -232,7 +232,11 @@ export default defineBackground(() => {
                 addBananaDelta(message.delta)
                     .then(sendResponse)
                     .catch((err) => handlerError(err, sendResponse));
+                
+                return true;
             }
+
+            return false;
         })
     })();
 });

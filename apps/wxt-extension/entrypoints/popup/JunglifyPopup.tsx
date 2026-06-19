@@ -119,7 +119,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
 
                 setStash(stash ?? null);
 
-                // surface the jungle for the current tab at the top of the list
+                // surface the jungle url for the current tab to the top of the list (if its a jungle)
                 if (url && jungleUrls.includes(url)) {
                     setJungleUrls([url, ...jungleUrls.filter((u) => u !== url)]);
                     setAtOwnJungle(true);
@@ -136,6 +136,12 @@ export default function JunglifyPopup({ user }: { user: User }) {
         }
 
         void getPopupInfo();
+
+        browser.runtime.onMessage.addListener((message, _sender, sendResponse) =>{
+            if (['STASH_UPDATE', 'JUNGLE_URLS_UPDATE', 'POPUP_UPDATE'].includes(message.type)) {
+                getPopupInfo().then(sendResponse);
+            }
+        });
     }, [url, refreshToggle]);
 
     if (loading) return <div>Loading...</div>;

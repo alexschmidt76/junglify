@@ -19,32 +19,29 @@ export default async function handlers(req: VercelRequest, res: VercelResponse):
         return;
     }
 
-    if (req.query.url) {
-        const delta = req.body.delta;
-        const url = req.query.url;
-    
-        if (!delta) {
-            res.status(400).json({ error: 'Bad request' });
+    const delta = req.body.delta;
+
+    if (!delta) {
+        res.status(400).json({ error: 'Bad request' });
+        return;
+    }
+
+    try {
+        const [row] = await sql`
+            UPDATE stashes
+            SET banana_count = GREATEST(0, banana_count + ${delta})
+            WHERE user_id = ${session.user.id}
+            RETURNING banana_count;
+        `;
+
+        if (!row) {
+            res.status(404).json({ error: 'Stash not found' });
             return;
         }
-    
-        try {
-            const [banana_count] = await sql`
-                UPDATE stashes s
-                SET s.banana_count = s.banana_count + ${delta}
-                WHERE s.url = ${url}
-                RETURNING s.banana_count;
-            `;
 
-            if (!banana_count) {
-                res.status(404).json({ error: 'Stash not found' });
-                return;
-            }
-
-            res.status(200).json({ banana_count });
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({ error: 'Internal server error' });
-        }
+        res.status(200).json({ banana_count: row.banana_count });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }

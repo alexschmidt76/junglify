@@ -81,7 +81,11 @@ export default defineContentScript({
         }
       }
 
-      if (urlInfo.isJungle) ui.mount();
+      // only logged-in users can collect bananas, so only show the button to them
+      const { bearerToken } = await browser.storage.local.get('bearerToken');
+
+      if (urlInfo.isJungle && bearerToken) ui.mount();
+      else ui.remove();
     }
 
     // TRACKING SPA URL CHANGES

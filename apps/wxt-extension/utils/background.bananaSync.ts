@@ -49,6 +49,20 @@ browser.runtime.onStartup.addListener(() => {
 });
 
 const flush = async () => {
+    const onFail = async (error: unknown) => {
+        // if the patch fails, add the delta back into the current state
+        // it will be sent with the next flush
+        console.log('banana flush failed, re-queuing', error);
+        
+        const state = await getState();
+        state.pendingDelta += deltaToSend;
+        if (state.firstPendingAt === null) state.firstPendingAt = Date.now();
+        await setState(state);
+
+        if (Date.now() - state.firstPendingAt >= DELAY_IN_MS) await flush();
+        else ensureAlarmScheduled();
+    }
+
     const state = await getState();
     if (state.pendingDelta === 0) return;
 
@@ -57,30 +71,58 @@ const flush = async () => {
     await setState(defaultState);
 
     try {
-        const stashUrl = 
-            (await browser.storage.local.get('stash') as {  stash: Stash }).stash.url;
-
-        await protectedFetch(apiUrl + '/stashes/update/banana-count?url=' + stashUrl, {
+        const res = await protectedFetch(apiUrl + '/stashes/update/banana-count', {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application-json' },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ delta: deltaToSend }),
         });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+            await onFail(data.error);
+            return;
+        }
+        
+        // ensure the local banana count is in sync with the database
+        const { stash }: {  stash: Stash } = 
+            (await browser.storage.local.get('stash'));
+        
+        if (stash.banana_count !== data.banana_count) {
+            stash.banana_count = data.banana_count;
+            await browser.storage.local.set({ stash });
+            browser.runtime.sendMessage({
+                type: 'STASH_UPDATE',
+                stash: stash,
+            });
+        }
     } catch (error) {
-        // if the patch fails, add the delta back into the current state
-        // it will be sent with the next flush
-        console.log('banana flush failed, re-queuing', error);
-        addBananaDelta(deltaToSend);
+        await onFail(error);
     }
 }
 
 /**
  * Stage a change in the user's banana count.
  * 
- * Staged changes get flushed every minute.
+ * Staged changes get flushed at most once a minute.
  * 
  * @param delta Change in bananas
  */
 export const addBananaDelta = async (delta: number) => {
+    // keep the local storage in sync with the changes
+    const { stash } = await browser.storage.local.get('stash') as { stash?: Stash };
+
+    // no stash hidden yet — there's nowhere to collect bananas into, so ignore
+    if (!stash) return;
+
+    stash.banana_count = Math.max(0, stash.banana_count + delta);
+    await browser.storage.local.set({ stash });
+    browser.runtime.sendMessage({
+        type: 'STASH_UPDATE',
+        stash: stash,
+    });
+
+    // update the sync state
     const state = await getState();
     state.pendingDelta += delta;
     if (state.firstPendingAt === null) state.firstPendingAt = Date.now();
