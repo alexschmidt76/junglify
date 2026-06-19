@@ -1,7 +1,8 @@
 import authClient from "@/utils/auth";
 import protectedFetch from "@/utils/background.protectedFetch";
 
-import type Cache from '@/typings/cache.js';
+import type { Cache } from '@/typings/global.js';
+import { addBananaDelta } from "@/utils/background.bananaSync";
 
 const apiUrl = import.meta.env.WXT_API_URL;
 if (!apiUrl) throw new Error('WXT_API_URL env var must not be empty');
@@ -30,7 +31,7 @@ export default defineBackground(() => {
             }
         }
 
-        /* fetch the user's stash + jungle urls and cache them for the popup */
+        // fn to fetch the user's stash + jungle urls and store them for the popup
         const refreshPopupInfo = async () => {
             const res = await protectedFetch(apiUrl + '/users/popup-info', {
                 method: 'GET',
@@ -86,6 +87,7 @@ export default defineBackground(() => {
             }
         })
 
+        // fn to call in handler catch callbacks
         const handlerError = (
             err: { message: string }, 
             sendResponse: (res: { ok: boolean, error: string}) => void
@@ -162,18 +164,16 @@ export default defineBackground(() => {
 
         /* plant a jungle at the given url on the user's behalf */
         const handlePlantJungle = async (url: string) => {
-            // no Content-Type header: the API expects a raw string body it can
-            // JSON.parse itself (sending application/json makes Vercel pre-parse
-            // it to an object and the handler then rejects the request)
             const res = await protectedFetch(apiUrl + '/jungles/create/user', {
                 method: 'POST',
                 headers: { type: 'application/json' },
                 body: JSON.stringify({ url }),
             });
 
-            const { error, newSeedCount } = await res.json() as { error?: string, newSeedCount?: number };
+            const { error, newSeedCount } = 
+                await res.json() as { error?: string, newSeedCount?: number };
 
-            // keep the cached jungle list in sync so the popup reflects the new jungle
+            // keep the stored jungleUrls list in sync so the popup reflects the new jungle
             if (!error) {
                 const { jungleUrls = [] }: { jungleUrls?: string[] } =
                     await browser.storage.local.get('jungleUrls');
@@ -227,21 +227,11 @@ export default defineBackground(() => {
         })
 
         /* listen for banana increases */
-        const handleAddBananas = async (count) => {
-            const { stash }: { stash: { url: string, banana_count: number } } = 
-                await browser.storage.local.get('stash', '');
-            
-            if (stash) {
-                await browser.storage.local.get('')
-            } else {
-                console.error('no stash!');
-                return { ok: false };
-            }
-        }
-
         browser.runtime.onMessage.addListener((message, _sendser, sendResponse) => {
-            if (message.type === 'ADD_BANANAS') {
-
+            if (message.type === 'ADD_BANANA_DELTA') {
+                addBananaDelta(message.delta)
+                    .then(sendResponse)
+                    .catch((err) => handlerError(err, sendResponse));
             }
         })
     })();

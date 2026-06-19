@@ -22,11 +22,14 @@ export type UrlCacheItem = {
     }
 }
 
-type Cache = {
+export type Cache = {
     [key: string]: {
         expires: number | null,
         data: object,
     }
 }
 
-export default Cache;
+export type Stash = {
+    url: string,
+    banana_count: number
+}

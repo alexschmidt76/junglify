@@ -2,7 +2,7 @@ import urlCleaner from '../utils/urlCleaner.ts';
 import cacheUpdate from '@/utils/content.cacheUpdate.ts';
 import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
 
-import type { UrlCache, UrlCacheItem } from '@/typings/cache.js';
+import type { UrlCache, UrlCacheItem } from '@/typings/global.js';
 
 const apiUrl = import.meta.env.WXT_API_URL;
 if (!apiUrl) throw new Error('WXT_API_URL env var must not be empty');
@@ -27,8 +27,8 @@ export default defineContentScript({
           e.preventDefault();
 
           browser.runtime.sendMessage({
-            type: 'ADD_BANANAS',
-            count: 1
+            type: 'ADD_BANANA_DELTA',
+            delta: 1
           }).catch(error => console.error(error));
         }
 
