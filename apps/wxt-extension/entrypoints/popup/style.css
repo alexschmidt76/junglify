@@ -1,2 +1,9 @@
 @import "tailwindcss";
 @source "../../../../packages/react-components/**/*.{ts,tsx}";
+
+/* Match the popup card so there are no white edges around it. */
+html,
+body {
+  margin: 0;
+  background-color: var(--color-green-950);
+}

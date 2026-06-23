@@ -35,7 +35,11 @@ function AppRoutes({ store }: { store: ReturnType<typeof useStore> }) {
 function App() {
   const store = useStore(authClient.useSession);
 
-  if (store.isPending) return <div>Loading...</div>;
+  if (store.isPending) return (
+    <div className="flex w-80 items-center justify-center bg-green-950 p-8 text-sm font-semibold text-green-400">
+      <span className="animate-pulse">Loading your jungle...</span>
+    </div>
+  );
 
   return (
     <MemoryRouter initialEntries={[store.data ? "/" : "/log-in"]}>

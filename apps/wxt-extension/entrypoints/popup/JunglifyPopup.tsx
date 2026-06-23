@@ -144,56 +144,96 @@ export default function JunglifyPopup({ user }: { user: User }) {
         });
     }, [url, refreshToggle]);
 
-    if (loading) return <div>Loading...</div>;
+    const buttonClass =
+        "mt-2 w-full rounded-lg bg-green-600 px-3 py-1.5 text-sm font-semibold text-black transition-colors hover:bg-green-500 hover:cursor-pointer disabled:opacity-60 disabled:hover:bg-green-600 disabled:hover:cursor-default";
+
+    if (loading) return (
+        <div className="flex w-80 items-center justify-center bg-green-950 p-8 text-sm font-semibold text-green-400">
+            <span className="animate-pulse">Loading your jungle...</span>
+        </div>
+    );
 
     if (popupError) return (
-        <div>
-            <div>{popupError}</div>
-            <button onClick={(e) => { e.preventDefault(); setRefreshToggle(!refreshToggle); }}>Refresh</button>
+        <div className="flex w-80 flex-col items-center gap-1 bg-green-950 p-6 text-center">
+            <p className="text-sm font-semibold text-red-500">{popupError}</p>
+            <button
+                className={buttonClass}
+                onClick={(e) => { e.preventDefault(); setRefreshToggle(!refreshToggle); }}
+            >
+                Refresh
+            </button>
         </div>
     )
 
     return (
-        <div className="flex w-min">
-            <div className="flex flex-col text-2xl">
+        <div className="flex w-80 flex-col gap-3 bg-green-950 p-4 text-amber-50">
+            <h1 className="text-center text-xl font-extrabold tracking-wide text-green-400">Junglify</h1>
+
+            {/* Stash */}
+            <section className="rounded-xl border border-amber-900/50 bg-amber-950/40 p-3">
+                <h2 className="mb-1.5 text-xs font-bold uppercase tracking-wide text-green-400">Your Stash</h2>
                 {
                     stash ? (
-                        <>
-                            <p>Stash URL: {stash.url}</p>
-                            <p>Bananas: {stash.banana_count}</p>
-                        </>
+                        <div className="space-y-1 text-sm">
+                            <p className="truncate" title={stash.url}>
+                                <span className="text-amber-200/60">URL: </span>{stash.url}
+                            </p>
+                            <p className="font-semibold">
+                                <span className="text-amber-200/60">Bananas: </span>
+                                <span className="text-yellow-400">🍌 {stash.banana_count}</span>
+                            </p>
+                        </div>
                     ) : (
-                        <>
-                            <p>You don't have a stash yet!</p>
-                            <p>Go to one of your jungles and hide your stash to start collecting bananas.</p>
-                            { hideError && <FormError message={hideError} />
-                             }
-                            { 
+                        <div className="space-y-2">
+                            <p className="text-xs leading-relaxed text-amber-100/80">
+                                You don't have a stash yet! Go to one of your jungles and hide your stash to start collecting bananas.
+                            </p>
+                            { hideError && <FormError message={hideError} /> }
+                            {
                                 atOwnJungle 
-                                && hiding
-                                    ? <button>Hiding your stash...</button>
-                                    : <button onClick={(e) => hideStash(e)}>Hide your stash here!</button> 
+                                    ? hiding
+                                        ? <button className={buttonClass} disabled>Hiding your stash...</button>
+                                        : <button className={buttonClass} onClick={(e) => hideStash(e)}>Hide your stash here!</button>
+                                    : null
                             }
-                        </>
+                        </div>
                     )
                 }
-            </div>
-            <span className="h-128 w-8 mx-4 bg-black rounded-2xl" />
-            <div className="flex flex-col text-2xl">
-                <ul>
-                    {
-                        jungleUrls.map((jungleUrl, i) => <li key={jungleUrl}>{jungleUrl} { atOwnJungle && i === 0 ? "<-- you're here right now!" : null }</li>)
-                    }
-                </ul>
-                <p>Seeds: {seedCount}</p>
+            </section>
+
+            {/* Jungles */}
+            <section className="rounded-xl border border-amber-900/50 bg-amber-950/40 p-3">
+                <div className="mb-2 flex items-center justify-between">
+                    <h2 className="text-xs font-bold uppercase tracking-wide text-green-400">Your Jungles</h2>
+                    <span className="text-xs font-semibold text-lime-400">🌱 {seedCount} seeds</span>
+                </div>
+                {
+                    jungleUrls.length > 0 ? (
+                        <ul className="flex max-h-34 flex-col gap-1 overflow-y-auto pr-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-amber-800/60 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1.5">
+                            {
+                                jungleUrls.map((jungleUrl, i) => (
+                                    <li key={jungleUrl} className="flex items-center gap-1.5 rounded-md bg-green-900/40 px-2 py-1">
+                                        <span className="min-w-0 truncate text-xs text-amber-50/90" title={jungleUrl}>{jungleUrl}</span>
+                                        {
+                                            atOwnJungle && i === 0 &&
+                                            <span className="ml-auto shrink-0 rounded-full bg-green-600 px-1.5 py-0.5 text-[10px] font-bold text-black">you're here</span>
+                                        }
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    ) : (
+                        <p className="text-xs text-amber-100/70">No jungles yet — plant one to get started!</p>
+                    )
+                }
                 {plantError && <FormError message={plantError} />}
                 {
                     planting
-                    ? <button className="border border-black">Planting a jungle...</button>
-                    : seedCount > 0
-                        && <button className="border border-black" onClick={(e) => plantJungle(e)}>Plant a jungle here!</button>
+                        ? <button className={buttonClass} disabled>Planting a jungle...</button>
+                        : seedCount > 0 &&
+                            <button className={buttonClass} onClick={(e) => plantJungle(e)}>Plant a jungle here!</button>
                 }
-            </div>
+            </section>
         </div>
     )
 }
