@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const sectionClass =
@@ -11,6 +12,12 @@ const rowButtonClass =
     "flex w-full items-center justify-between rounded-md bg-green-900/40 px-3 py-2 text-sm font-medium text-amber-50 transition-colors hover:bg-green-900/70 hover:cursor-pointer";
 
 export default function AccountSettings() {
+    const [musicMuted, setMusicMuted] = useState(false);
+    const [sfxMuted, setSfxMuted] = useState(false);
+    const [musicLevel, setMusicLevel] = useState(80);
+    const [sfxLevel, setSfxLevel] = useState(80);
+    const [enableOnLaunch, setEnableOnLaunch] = useState(true);
+
     const navigate = useNavigate();
 
     return (
@@ -40,11 +47,9 @@ export default function AccountSettings() {
                     </svg>
                 </button>
             </section>
-
             {/* Game Settings */}
             <section className={sectionClass}>
                 <h2 className={headingClass}>Game Settings</h2>
-
                 {/* Music volume */}
                 <div className="mb-3">
                     <label className="mb-1 block text-xs font-semibold text-amber-100/80">Music</label>
@@ -52,22 +57,31 @@ export default function AccountSettings() {
                         <button
                             type="button"
                             aria-label="Mute music"
-                            className={muteButtonClass}
-                            onClick={() => {}}
+                            className={muteButtonClass + (musicMuted && ' rounded-lg border border-red-800/60')}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setMusicMuted(!musicMuted);
+                            }}
                         >
-                            🔊
+                            {
+                                musicMuted ? '🔇' : musicLevel > 50 ? '🔊' : musicLevel > 0 ? '🔉' : '🔈'
+                            }
                         </button>
                         <input
                             type="range"
                             min={0}
                             max={100}
-                            defaultValue={80}
+                            defaultValue={musicLevel}
                             aria-label="Music volume"
                             className={sliderClass}
+                            disabled={musicMuted}
+                            onChange={(e) => {
+                                e.preventDefault();
+                                setMusicLevel(Number(e.target.value));
+                            }}
                         />
                     </div>
                 </div>
-
                 {/* SFX volume */}
                 <div className="mb-3">
                     <label className="mb-1 block text-xs font-semibold text-amber-100/80">Sound Effects</label>
@@ -76,26 +90,39 @@ export default function AccountSettings() {
                             type="button"
                             aria-label="Mute sound effects"
                             className={muteButtonClass}
-                            onClick={() => {}}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setSfxMuted(!sfxMuted);
+                            }}
                         >
-                            🔊
+                            {
+                                sfxMuted ? '🔇' : sfxLevel > 50 ? '🔊' : sfxLevel > 0 ? '🔉' : '🔈'
+                            }
                         </button>
                         <input
                             type="range"
                             min={0}
                             max={100}
-                            defaultValue={80}
+                            defaultValue={sfxLevel}
                             aria-label="Sound effects volume"
                             className={sliderClass}
+                            disabled={sfxMuted}
+                            onChange={(e) => {
+                                e.preventDefault();
+                                setSfxLevel(Number(e.target.value));
+                            }}
                         />
                     </div>
                 </div>
-
                 {/* Auto-enable on launch */}
                 <label className="flex cursor-pointer items-center justify-between">
                     <span className="text-sm text-amber-50">Enable Junglify on launch</span>
                     <span className="relative inline-block h-6 w-11 shrink-0">
-                        <input type="checkbox" className="peer sr-only" />
+                        <input type="checkbox" className="peer sr-only" onChange={(e) => {
+                            e.preventDefault();
+                            setEnableOnLaunch(e.target.checked);
+                        }} 
+                    />
                         <span className="block h-6 w-11 rounded-full bg-amber-900/60 transition-colors peer-checked:bg-green-600" />
                         <span className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-amber-50 transition-transform peer-checked:translate-x-5" />
                     </span>
