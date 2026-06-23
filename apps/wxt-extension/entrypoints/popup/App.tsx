@@ -6,6 +6,7 @@ import authClient from '@/utils/auth';
 import JunglifyPopup from './JunglifyPopup';
 import LogInForm from '@repo/react-components/auth-forms/LogInForm';
 import SignUpForm from '@repo/react-components/auth-forms/SignUpForm';
+import AccountSettings from '@repo/react-components/menus/AccountSettings';
 
 function AppRoutes({ store }: { store: ReturnType<typeof useStore> }) {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ function AppRoutes({ store }: { store: ReturnType<typeof useStore> }) {
       <Route path='/' element={store.data ? <JunglifyPopup user={store.data.user} /> : <Navigate to="/log-in" />} />
       <Route path='/log-in' element={<LogInForm authClient={authClient} callbackFn={callback} onNavigate={(path) => navigate(path)} />} />
       <Route path='/sign-up' element={<SignUpForm authClient={authClient} callbackFn={callback} onNavigate={(path) => navigate(path)} />} />
+      <Route path='/settings' element={store.data ? <AccountSettings /> : <Navigate to="log-in" />} />
     </Routes>
   );
 }

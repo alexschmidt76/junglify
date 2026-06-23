@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 const sectionClass =
     "rounded-xl border border-amber-900/50 bg-amber-950/40 p-3";
 const headingClass =
@@ -9,9 +11,35 @@ const rowButtonClass =
     "flex w-full items-center justify-between rounded-md bg-green-900/40 px-3 py-2 text-sm font-medium text-amber-50 transition-colors hover:bg-green-900/70 hover:cursor-pointer";
 
 export default function AccountSettings() {
+    const navigate = useNavigate();
+
     return (
         <div className="flex w-80 flex-col gap-3 bg-green-950 p-4 text-amber-50">
-            <h1 className="text-center text-xl font-extrabold tracking-wide text-green-400">Settings</h1>
+            {/* Header */}
+            <section className="relative flex items-center justify-center">
+                <h1 className="text-center text-xl font-extrabold tracking-wide text-green-400">Settings</h1>
+                <button
+                    type="button"
+                    aria-label="back"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        navigate('/');
+                    }}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 rounded-md p-1 
+                        text-green-400 transition-colors hover:bg-green-900/40 
+                        hover:text-green-300 hover:cursor-pointer"
+                >
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="24" height="24" viewBox="0 0 24 24" 
+                        fill="none" stroke="currentColor" stroke-width={2} 
+                        stroke-linecap="round" stroke-linejoin="round" 
+                        aria-hidden="true"
+                    >
+                        <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                </button>
+            </section>
 
             {/* Game Settings */}
             <section className={sectionClass}>

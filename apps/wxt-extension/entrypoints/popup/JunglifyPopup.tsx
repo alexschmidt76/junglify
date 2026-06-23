@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import cleanUrl from "@/utils/urlCleaner";
 
 import type User from '@repo/utils/types/user';
@@ -35,6 +36,8 @@ export default function JunglifyPopup({ user }: { user: User }) {
     const [refreshToggle, setRefreshToggle] = useState(false);
     const [hiding, setHiding] = useState(false);
     const [hideError, setHideError] = useState<null | string>(null);
+
+    const navigate = useNavigate();
 
     const plantJungle = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
@@ -174,16 +177,27 @@ export default function JunglifyPopup({ user }: { user: User }) {
                 <button
                     type="button"
                     aria-label="Settings"
-                    onClick={() => {}}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 rounded-md p-1 text-green-400 transition-colors hover:bg-green-900/40 hover:text-green-300 hover:cursor-pointer"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        navigate('/settings');
+                    }}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 rounded-md p-1 
+                        text-green-400 transition-colors hover:bg-green-900/40 
+                        hover:text-green-300 hover:cursor-pointer"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg"
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg"
                         width="20" height="20"
                         viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" strokeWidth={2}
                         strokeLinecap="round" strokeLinejoin="round"
-                        aria-hidden="true">
-                        <path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
+                        aria-hidden="true"
+                    >
+                        <path d={`M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 
+                            1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 
+                            0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 
+                            1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915`} 
+                        />
                         <circle cx="12" cy="12" r="3" />
                     </svg>
                 </button>
