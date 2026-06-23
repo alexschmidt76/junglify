@@ -2,6 +2,7 @@
 
 | VERSION | UPDATE INFO                                                                 | Date (yyyy-mm-dd) |
 |---------|-----------------------------------------------------------------------------|-------------------|
+| 0.4.2   | fixed button logic in wxt and sql in api call, also styled popup            | 2026-06-22        |
 | 0.4.1   | a user can now collect bananas by pressing a button that appears at jungles | 2026-06-19        |
 | 0.4.0   | a user can now plant jungles and hide their stash                           | 2026-06-17        |
 | 0.3.1   | junlge planting is now more robust                                          | 2026-06-16        |

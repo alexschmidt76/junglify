@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "rest api for junglify's database",
   "homepage": "https://github.com/alexschmidt76/junglify#readme",
   "bugs": {

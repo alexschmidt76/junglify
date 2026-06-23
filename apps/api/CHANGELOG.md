@@ -2,6 +2,7 @@
 
 | VERSION | UPDATE INFO                                                         | Date (yyyy-mm-dd) |
 |---------|---------------------------------------------------------------------|-------------------|
+| 0.6.2   | Fixed SQL in jungle url lookup                                      | 2026-06-22        |
 | 0.6.1   | Added /stashes/update/banana-count route and service                | 2026-06-19        |
 | 0.6.0   | Added /stashes/create route and service                             | 2026-06-17        |
 | 0.5.0   | Added /users/popup-info and junlges/create/user routes and services | 2026-06-16        |
