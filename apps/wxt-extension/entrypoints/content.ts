@@ -73,8 +73,13 @@ export default defineContentScript({
       // only logged-in users can collect bananas, so only show the button to them
       const { bearerToken } = await browser.storage.local.get('bearerToken');
 
-      if (urlInfo?.isJungle && bearerToken) ui.mount();
-      else ui.remove();
+      // mount/remove are not idempotent in WXT — calling mount() again re-runs
+      // onMount and stacks another button, so guard on the current mount state
+      if (urlInfo?.isJungle && bearerToken) {
+        if (!ui.mounted) ui.mount();
+      } else if (ui.mounted) {
+        ui.remove();
+      }
     }
 
     /* handle updates regarding the current url */
@@ -82,7 +87,7 @@ export default defineContentScript({
       const { urlCache }: { urlCache?: Cache<UrlCacheData> } = 
         await browser.storage.local.get('urlCache');
 
-      if (urlCache && urlCache[url] && urlCache[url].data.isJungle) {
+      if (urlCache && urlCache[url] && urlCache[url].data.isJungle && !ui.mounted) {
         ui.mount();
       }
     }
