@@ -34,6 +34,8 @@
   },
   "exports": {
     "./auth-forms/*": "./auth-forms/*.tsx",
-    "./FormError": "./FormError.tsx"
+    "./menus/*": "./menus/*.tsx",
+    "./misc/*": "./misc/*.tsx",
+    "./FormError": "./misc/FormError.tsx"
   }
 }

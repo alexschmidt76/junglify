@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ProfileSettings from "../../components/ProfileSettings.tsx"
+import AccountSettings from "../../../../../packages/react-components/menus/AccountSettings";
 
 export const prerender = false;
 const username = Astro.params.username || '';
@@ -8,7 +8,7 @@ const username = Astro.params.username || '';
 <BaseLayout title={username}>
     <div class="flex">
         <div class="mx-auto my-16">
-            <ProfileSettings client:load />
+            <AccountSettings client:load />
         </div>
     </div>
 </BaseLayout>

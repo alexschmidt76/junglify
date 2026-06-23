@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import cleanUrl from "@/utils/urlCleaner";
 
 import type User from '@repo/utils/types/user';
-import FormError from "@repo/react-components/FormError";
+import FormError from "../../../../packages/react-components/misc/FormError";
 
 type StashInfo = {
     url: string,
@@ -144,8 +144,9 @@ export default function JunglifyPopup({ user }: { user: User }) {
         });
     }, [url, refreshToggle]);
 
-    const buttonClass =
-        "mt-2 w-full rounded-lg bg-green-600 px-3 py-1.5 text-sm font-semibold text-black transition-colors hover:bg-green-500 hover:cursor-pointer disabled:opacity-60 disabled:hover:bg-green-600 disabled:hover:cursor-default";
+    const buttonClass = `mt-2 w-full rounded-lg bg-green-600 px-3 py-1.5 text-sm font-semibold text-black 
+        transition-colors hover:bg-green-500 hover:cursor-pointer disabled:opacity-60 disabled:hover:bg-green-600 
+        disabled:hover:cursor-default`;
 
     if (loading) return (
         <div className="flex w-80 items-center justify-center bg-green-950 p-8 text-sm font-semibold text-green-400">
@@ -167,7 +168,28 @@ export default function JunglifyPopup({ user }: { user: User }) {
 
     return (
         <div className="flex w-80 flex-col gap-3 bg-green-950 p-4 text-amber-50">
-            <h1 className="text-center text-xl font-extrabold tracking-wide text-green-400">Junglify</h1>
+            {/* Header */}
+            <section className="relative flex items-center justify-center">
+                <h1 className="text-center text-xl font-extrabold tracking-wide text-green-400">Junglify</h1>
+                <button
+                    type="button"
+                    aria-label="Settings"
+                    onClick={() => {}}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 rounded-md p-1 text-green-400 transition-colors hover:bg-green-900/40 hover:text-green-300 hover:cursor-pointer"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        width="20" height="20"
+                        viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" strokeWidth={2}
+                        strokeLinecap="round" strokeLinejoin="round"
+                        aria-hidden="true">
+                        <path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                </button>
+
+            </section>
+
 
             {/* Stash */}
             <section className="rounded-xl border border-amber-900/50 bg-amber-950/40 p-3">
@@ -176,7 +198,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
                     stash ? (
                         <div className="space-y-1 text-sm">
                             <p className="truncate" title={stash.url}>
-                                <span className="text-amber-200/60">URL: </span>{stash.url}
+                                <span className="text-amber-200/60">URL: </span><a href={stash.url}>{stash.url}</a>
                             </p>
                             <p className="font-semibold">
                                 <span className="text-amber-200/60">Bananas: </span>
@@ -209,21 +231,22 @@ export default function JunglifyPopup({ user }: { user: User }) {
                 </div>
                 {
                     jungleUrls.length > 0 ? (
-                        <ul className="flex max-h-34 flex-col gap-1 overflow-y-auto pr-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-amber-800/60 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1.5">
+                        <ul className={`flex max-h-34 flex-col gap-1 overflow-y-auto pr-1 [&::-webkit-scrollbar-thumb]:rounded-full 
+                            [&::-webkit-scrollbar-thumb]:bg-amber-800/60 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1.5`}>
                             {
                                 jungleUrls.map((jungleUrl, i) => (
                                     <li key={jungleUrl} className="flex items-center gap-1.5 rounded-md bg-green-900/40 px-2 py-1">
-                                        <span className="min-w-0 truncate text-xs text-amber-50/90" title={jungleUrl}>{jungleUrl}</span>
+                                        <span className="min-w-0 truncate text-xs text-amber-50/90" title={jungleUrl}><a href={jungleUrl}>{jungleUrl}</a></span>
                                         {
                                             atOwnJungle && i === 0 &&
-                                            <span className="ml-auto shrink-0 rounded-full bg-green-600 px-1.5 py-0.5 text-[10px] font-bold text-black">you're here</span>
+                                            <span className="ml-auto shrink-0 rounded-full bg-green-600 px-1.5 py-0.5 text-[10px] font-bold text-black">you're here!</span>
                                         }
                                     </li>
                                 ))
                             }
                         </ul>
                     ) : (
-                        <p className="text-xs text-amber-100/70">No jungles yet — plant one to get started!</p>
+                        <p className="text-xs text-amber-100/70">No jungles yet, plant one to get started!</p>
                     )
                 }
                 {plantError && <FormError message={plantError} />}
