@@ -52,7 +52,7 @@ export default function JunglifyPopup({ user }: { user: User }) {
         try {
             const res = await browser.runtime.sendMessage({
                 type: 'PLANT_JUNGLE',
-                url,
+                url: url,
             }) as PlantResponse;
 
             if (res.error) {

@@ -1,28 +1,42 @@
 import urlCleaner from '../utils/urlCleaner.ts';
-import cacheUpdate from '@/utils/content.cacheUpdate.ts';
 import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
 
-import type { UrlCache, UrlCacheItem } from '@/typings/global.js';
-
-const apiUrl = import.meta.env.WXT_API_URL;
-if (!apiUrl) throw new Error('WXT_API_URL env var must not be empty');
-
-/** How long a cached jungle-status lookup stays fresh. */
-const CACHE_TTL_MS = 1000 * 60 * 60; // 1 hour
+import type { Cache, UrlCacheData } from '@/typings/global.js';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
   runAt: 'document_start',
   async main(ctx) {
-    // create shadow root container over browser window
+    /* create shadow root container over browser window */
     const ui = await createShadowRootUi(ctx, {
-      name: 'banana-button',
+      name: 'junglify-overlay',
       position: 'overlay',
       anchor: 'body',
       onMount: (container) => {
         const button = document.createElement('button');
         button.id = 'banana-button';
-        button.textContent = 'Get a banana';
+        button.textContent = '🍌 Get a banana';
+
+        // The overlay host is a 0x0 anchor point, so the button has to position
+        // and size itself. Fixed pins it to the viewport (the host's absolute
+        // positioning doesn't create a containing block for fixed children),
+        // and a near-max z-index keeps it above page content.
+        button.style.cssText = [
+          'position: fixed',
+          'bottom: 20px',
+          'right: 20px',
+          'z-index: 2147483647',
+          'margin: 0',
+          'padding: 12px 20px',
+          'border: none',
+          'border-radius: 9999px',
+          'background: #ffcf33',
+          'color: #3a2d00',
+          'font: 700 16px/1 system-ui, sans-serif',
+          'cursor: pointer',
+          'box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25)',
+        ].join(';');
+
         button.onclick = (e) => {
           e.preventDefault();
 
@@ -37,58 +51,51 @@ export default defineContentScript({
       },
       onRemove: (button) => {
         button?.remove();
-      }
+      },
     });
 
-    // runs every time a new url is hit
+    /* runs every time a new url is hit */
     const onUrlChange = async (url: string) => {
-      console.log("URL changed to:", url);
-
+      // clean the url and look it up in the cache/database
       const cleanUrl = urlCleaner(url);
 
-      // get urlInfo from urlCache or fetch it from the api
-      const { urlCache = {} }: { urlCache?: UrlCache } =
-        await browser.storage.local.get('urlCache');
-      const cacheVal = urlCache[cleanUrl];
-
-      let urlInfo: UrlCacheItem['data'];
-
-      if (cacheVal?.expires && cacheVal.expires > Date.now()) {
-        urlInfo = cacheVal.data;
-      } else {
-        try {
-          const res = await fetch(
-            apiUrl + '/jungles?url=' + encodeURIComponent(cleanUrl),
-            { method: 'GET' },
-          );
-
-          const { growthStage, hasStash } = await res.json();
-
-          urlInfo = {
-            isJungle: res.ok,
-            jungle: res.ok ? { growthStage, hasStash } : null,
-          };
-
-          await cacheUpdate('urlCache', cleanUrl, {
-            data: urlInfo,
-            expires: Date.now() + CACHE_TTL_MS,
-          });
-
-
-        } catch (error) {
-          console.warn('[Junglify] jungle lookup failed:', error);
-          return;
-        }
+      let urlInfo: UrlCacheData | undefined;
+      try {
+        ({ urlInfo } = await browser.runtime.sendMessage({
+          type: 'JUNGLE_LOOKUP',
+          url: cleanUrl,
+        }));
+      } catch (err) {
+        console.error("[Junglify] JUNGLE_LOOKUP failed:", err);
+        return;
       }
 
       // only logged-in users can collect bananas, so only show the button to them
       const { bearerToken } = await browser.storage.local.get('bearerToken');
 
-      if (urlInfo.isJungle && bearerToken) ui.mount();
+      if (urlInfo?.isJungle && bearerToken) ui.mount();
       else ui.remove();
     }
 
-    // TRACKING SPA URL CHANGES
+    /* handle updates regarding the current url */
+    const handleUrlRefresh = async (url: string) => {
+      const { urlCache }: { urlCache?: Cache<UrlCacheData> } = 
+        await browser.storage.local.get('urlCache');
+
+      if (urlCache && urlCache[url] && urlCache[url].data.isJungle) {
+        ui.mount();
+      }
+    }
+
+    /* listen for messages from the popup and the backend */
+    browser.runtime.onMessage.addListener((msg) => {
+      if (msg.type === 'REFRESH_CURRENT_URL') {
+        handleUrlRefresh(msg.url).catch((err) =>
+          console.error("[Junglify] REFRESH_CURRENT_URL handler failed:", err));
+      }
+    })
+
+    /* tracking spa url changes */
     const _pushState = history.pushState.bind(history);
     const _replaceState = history.replaceState.bind(history);
 
@@ -106,11 +113,11 @@ export default defineContentScript({
 
     browser.runtime.onMessage.addListener((msg) => {
       if (msg.type === 'TAB_ACTIVATED' || msg.type === 'TAB_UPDATED') {
-        console.log('Active tab URL:', msg.url);
         onUrlChange(msg.url);
       }
     });
 
+    // initial script run on launch
     await onUrlChange(location.href);
   },
 });

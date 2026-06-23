@@ -1,32 +1,16 @@
-export type UrlCache = {
+export type Cache<T = object> = {
     [key: string]: {
         expires: number | null,
-        data: {
-            isJungle: boolean,
-            jungle: {
-                growthStage: number,
-                hasStash: boolean
-            } | null,
-        }
+        data: T,
     }
 }
 
-export type UrlCacheItem = {
-    expires: number | null,
-    data: {
-        isJungle: boolean,
-        jungle: {
-            growthStage: number,
-            hasStash: boolean
-        } | null,
-    }
-}
-
-export type Cache = {
-    [key: string]: {
-        expires: number | null,
-        data: object,
-    }
+type UrlCacheData = {
+    isJungle: boolean,
+    jungle: {
+        growthStage: number,
+        hasStash: boolean,
+    } | null,
 }
 
 export type Stash = {

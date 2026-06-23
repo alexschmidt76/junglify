@@ -13,6 +13,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   }
 
   const { url } = req.body as { url?: string };
+  console.log('[Junglify] Creating a jungle at url:' + url);
 
   if (!url) {
     res.status(400).json({ error: 'url must be a string and must not be null' });
