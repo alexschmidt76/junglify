@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import cleanUrl from "@/utils/urlCleaner";
 
 import type User from '@repo/utils/types/user';
-import FormError from "../../../../packages/react-components/misc/FormError";
+import FormError from "@repo/react-components/misc/FormError";
 
 type StashInfo = {
     url: string,

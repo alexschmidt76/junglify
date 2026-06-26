@@ -2,6 +2,7 @@
 
 | VERSION | UPDATE INFO                                                                   | Date (yyyy-mm-dd)  |
 |---------|-------------------------------------------------------------------------------|--------------------|
+| 0.6.0   | created domMapper and linkHarvester functions for the content script          | 2026-06-25         |
 | 0.5.1   | fixed banana button placement and added styling to popup                      | 2026-06-22         |
 | 0.5.0   | user can click a button that appears at jungle urls and it gives them bananas | 2026-06-19         |
 | 0.4.0   | user can hide their stash at a jungle they own                                | 2026-06-17         |
