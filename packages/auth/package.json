@@ -17,7 +17,7 @@
   "scripts": {
     "build": "tsx",
     "check-types": "tsc --noEmit",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"(@repo/auth: no tests)\""
   },
   "dependencies": {
     "better-auth": "^1.6.15"

@@ -6,71 +6,100 @@ vi.mock('@/lib/utils/cors.js', () => ({
 }));
 
 vi.mock('@/lib/services/jungle.services.js', () => ({
-  createJungle: vi.fn(),
+  createUserJungle: vi.fn(),
 }));
 
-import { createJungle } from '@/lib/services/jungle.services.js';
+vi.mock('@/lib/auth/auth.js', () => ({
+  default: { api: { getSession: vi.fn() } },
+}));
+
+import { applyCors } from '@/lib/utils/cors.js';
+import { createUserJungle } from '@/lib/services/jungle.services.js';
+import auth from '@/lib/auth/auth.js';
 import handler from '@/api/jungles/create/user.js';
 
-const mockJungle = {
-  id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  url: 'https://example.com',
-  jungle_type: 'wild',
-  userId: null,
-};
+const mockSession = { user: { id: 'user-123' } };
 
-describe('POST /jungles/create', () => {
+describe('POST /jungles/create/user', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(applyCors).mockReturnValue(false);
   });
 
-  it('creates and returns the jungle with status 201', async () => {
-    vi.mocked(createJungle).mockResolvedValue(mockJungle);
+  it('creates an owned jungle and returns the new seed count with 201', async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue(mockSession as never);
+    vi.mocked(createUserJungle).mockResolvedValue({ newSeedCount: 4 });
     const req = makeReq({ method: 'POST', body: { url: 'https://example.com' } });
     const res = makeRes();
-    await handler(req, res as any);
+    await handler(req, res as never);
     expect(res.statusCode).toBe(201);
-    expect(res.body).toEqual(mockJungle);
+    expect(res.body).toEqual({ newSeedCount: 4 });
   });
 
-  it('passes userId to the service when provided', async () => {
-    vi.mocked(createJungle).mockResolvedValue({ ...mockJungle, jungle_type: 'owned', userId: 'user1' });
-    const req = makeReq({ method: 'POST', body: { url: 'https://example.com', userId: 'user1' } });
-    const res = makeRes();
-    await handler(req, res as any);
-    expect(createJungle).toHaveBeenCalledWith('https://example.com', 'user1');
-  });
-
-  it('passes null when userId is omitted', async () => {
-    vi.mocked(createJungle).mockResolvedValue(mockJungle);
+  it('passes the url and session user id to the service', async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue(mockSession as never);
+    vi.mocked(createUserJungle).mockResolvedValue({ newSeedCount: 4 });
     const req = makeReq({ method: 'POST', body: { url: 'https://example.com' } });
     const res = makeRes();
-    await handler(req, res as any);
-    expect(createJungle).toHaveBeenCalledWith('https://example.com', null);
+    await handler(req, res as never);
+    expect(createUserJungle).toHaveBeenCalledWith('https://example.com', 'user-123');
+  });
+
+  it('returns 422 when the user is out of seeds', async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue(mockSession as never);
+    vi.mocked(createUserJungle).mockResolvedValue({ error: 422 });
+    const req = makeReq({ method: 'POST', body: { url: 'https://example.com' } });
+    const res = makeRes();
+    await handler(req, res as never);
+    expect(res.statusCode).toBe(422);
+    expect(res.body).toEqual({ error: "You don't have enough seeds!" });
+  });
+
+  it('returns 500 when the service reports an internal error', async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue(mockSession as never);
+    vi.mocked(createUserJungle).mockResolvedValue({ error: 500 });
+    const req = makeReq({ method: 'POST', body: { url: 'https://example.com' } });
+    const res = makeRes();
+    await handler(req, res as never);
+    expect(res.statusCode).toBe(500);
+    expect(res.body).toEqual({ error: 'Internal server error' });
   });
 
   it('returns 400 when url is missing from the body', async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue(mockSession as never);
     const req = makeReq({ method: 'POST', body: {} });
     const res = makeRes();
-    await handler(req, res as any);
+    await handler(req, res as never);
     expect(res.statusCode).toBe(400);
-    expect(res.body).toEqual({ error: 'URL is required to create a jungle' });
+    expect(res.body).toEqual({ error: 'url must be a string and must not be null' });
+    expect(createUserJungle).not.toHaveBeenCalled();
+  });
+
+  it('returns 401 when there is no session', async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue(null);
+    const req = makeReq({ method: 'POST', body: { url: 'https://example.com' } });
+    const res = makeRes();
+    await handler(req, res as never);
+    expect(res.statusCode).toBe(401);
+    expect(res.body).toEqual({ error: 'Unauthorized' });
+    expect(createUserJungle).not.toHaveBeenCalled();
   });
 
   it('returns 405 for non-POST methods', async () => {
     const req = makeReq({ method: 'GET', body: { url: 'https://example.com' } });
     const res = makeRes();
-    await handler(req, res as any);
+    await handler(req, res as never);
     expect(res.statusCode).toBe(405);
     expect(res.body).toEqual({ error: 'Method Not Allowed' });
+    expect(auth.api.getSession).not.toHaveBeenCalled();
   });
 
-  it('returns 500 when service throws', async () => {
-    vi.mocked(createJungle).mockRejectedValue(new Error('DB error'));
-    const req = makeReq({ method: 'POST', body: { url: 'https://example.com' } });
+  it('short-circuits and does nothing else when applyCors handles the request', async () => {
+    vi.mocked(applyCors).mockReturnValue(true);
+    const req = makeReq({ method: 'OPTIONS' });
     const res = makeRes();
-    await handler(req, res as any);
-    expect(res.statusCode).toBe(500);
-    expect(res.body).toEqual({ error: 'Internal Server Error' });
+    await handler(req, res as never);
+    expect(auth.api.getSession).not.toHaveBeenCalled();
+    expect(res.json).not.toHaveBeenCalled();
   });
 });

@@ -12,39 +12,50 @@ vi.mock('@/lib/services/jungle.services.js', () => ({
 import { getJungleByUrl } from '@/lib/services/jungle.services.js';
 import handler from '@/api/jungles/index.js';
 
-const mockJungle = {
-  id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  url: 'https://example.com',
-  jungle_type: 'wild',
-};
-
 describe('GET /jungles', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('returns info message when no url query param provided', async () => {
+  it('returns the info message when no url query param is provided', async () => {
     const req = makeReq({ method: 'GET', query: {} });
     const res = makeRes();
-    await handler(req, res as any);
+    await handler(req, res as never);
     expect(res.statusCode).toBe(200);
-    expect((res.body as any).message).toContain('junglify api');
+    expect((res.body as { message: string }).message).toContain('junglify api');
   });
 
-  it('returns jungle when url query param matches', async () => {
-    vi.mocked(getJungleByUrl).mockResolvedValue(mockJungle);
+  it('returns the growth stage and stash flag when the url matches', async () => {
+    vi.mocked(getJungleByUrl).mockResolvedValue({ growth_stage: 3, has_stash: true });
     const req = makeReq({ method: 'GET', query: { url: 'https://example.com' } });
     const res = makeRes();
-    await handler(req, res as any);
-    expect(res.body).toEqual(mockJungle);
+    await handler(req, res as never);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ growthStage: 3, hasStash: true });
   });
 
-  it('returns 404 when url query param matches nothing', async () => {
+  it('looks up the jungle with the url query param', async () => {
+    vi.mocked(getJungleByUrl).mockResolvedValue({ growth_stage: 0, has_stash: false });
+    const req = makeReq({ method: 'GET', query: { url: 'https://example.com' } });
+    const res = makeRes();
+    await handler(req, res as never);
+    expect(getJungleByUrl).toHaveBeenCalledWith('https://example.com');
+  });
+
+  it('returns 404 when the url query param matches nothing', async () => {
     vi.mocked(getJungleByUrl).mockResolvedValue(undefined);
     const req = makeReq({ method: 'GET', query: { url: 'https://notfound.com' } });
     const res = makeRes();
-    await handler(req, res as any);
+    await handler(req, res as never);
     expect(res.statusCode).toBe(404);
     expect(res.body).toEqual({ error: 'Jungle not found' });
+  });
+
+  it('returns 405 for non-GET methods', async () => {
+    const req = makeReq({ method: 'POST', query: {} });
+    const res = makeRes();
+    await handler(req, res as never);
+    expect(res.statusCode).toBe(405);
+    expect(res.body).toEqual({ error: 'Method Not Allowed' });
   });
 });
